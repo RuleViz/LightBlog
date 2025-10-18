@@ -1,0 +1,97 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root  # 请根据实际情况修改用户名
+    password: 123456  # 请根据实际情况修改密码
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
+
+# Knife4j配置
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+    enable-swagger-models: true
+    enable-document-manage: true
+    swagger-model-name: 实体类列表
+  basic:
+    enable: false
+  openapi:
+    title: 博客系统 API
+    description: 现代化、高性能、易扩展的博客系统后端API接口文档
+    email: zalaohuang66@163.com
+    concat: 博客系统
+    url: https://blog.RuleViz.com
+    version: 1.0.0
+    license: MIT License
+    license-url: https://opensource.org/licenses/MIT
+    terms-of-service-url: https://blog.***.com/terms
+    group:
+      default:
+        group-name: 默认分组
+        api-rule: package
+        api-rule-resources:
+          - com.xingmiao.blog.controller
+
+# 博客作者配置
+blog:
+  author:
+    username: admin
+    nickname: RuleViz Blog
+    bio: Welcome to my blog！
+    avatar-url: https://via.placeholder.com/150x150?text=xingmiao
+    email: zalaohuang66@163.com
+    website: https://blog.RuleViz.com
+    # export BLOG_AUTHOR_PASSWORD=your_real_password
+    password: ${MANAGE_PASSWORD:admin123}
+    password-enabled: true
+    github-username: RuleViz  # 请修改为实际的GitHub用户名
+  security:
+    jwt:
+      # 生产环境请使用强密钥，可以通过环境变量设置
+      # export BLOG_JWT_SECRET=your_strong_secret_key_here
+      secret: ${BLOG_JWT_SECRET:defaultSecretKeyForDevelopmentOnlyChangeInProduction}
+      # 默认令牌过期时间（秒）
+      default-ttl: 86400
+
+
+github:
+  token: ${GITHUB_TOKEN:}
+
+
+# LangChain4j OpenAI-compatible streaming chat model (placeholder config)
+langchain4j:
+  open-ai:
+    streaming-chat-model:
+      # 如使用 OpenAI/DeepSeek 兼容网关，请设置 base-url 与 model-name
+      base-url: https://api.deepseek.com
+      api-key: ${DEEPSEEK_KEY:}
+      model-name: deepseek-chat
+      temperature: 0.3
+      timeout: 30s
+      max-retries: 2
+
+# 文件上传配置
+upload:
+  path: uploads  # 上传文件保存路径
+  max-file-size: 5MB  # 最大文件大小

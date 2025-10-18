@@ -1,0 +1,400 @@
+/* Markdown 编辑器样式 */
+
+/* 编辑器内容区域基础样式 */
+.markdown-editor-content .ProseMirror {
+  outline: none;
+  min-height: 300px;
+  padding: 16px; /* 增加内边距，让光标有足够的可见空间 */
+  caret-color: #1890ff; /* 光标颜色 - 蓝色，确保可见 */
+  color: #000000; /* 纯黑色文字，确保最佳可读性 */
+  position: relative;
+  box-sizing: border-box; /* 确保padding包含在尺寸内 */
+  /* 浏览器渲染优化 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 聚焦状态 - 让光标更明显 */
+.markdown-editor-content .ProseMirror:focus {
+  outline: none;
+  caret-color: #1890ff;
+}
+
+/* 聚焦时容器边框高亮 */
+.markdown-editor-content:focus-within {
+  border-color: #40a9ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 占位符样式 */
+.markdown-editor-content .ProseMirror p.is-editor-empty:first-child::before {
+  color: #bfbfbf;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* 段落间距 */
+.markdown-editor-content .ProseMirror p {
+  margin: 0.5em 0;
+  min-height: 1.5em; /* 确保空行也有高度，光标可见 */
+  color: #000000; /* 确保段落文字为纯黑色 */
+}
+
+.markdown-editor-content .ProseMirror p:first-child {
+  margin-top: 0;
+}
+
+.markdown-editor-content .ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+/* 标题样式 */
+.markdown-editor-content .ProseMirror h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0.8em 0 0.5em;
+  line-height: 1.3;
+  color: #000000; /* 标题为纯黑色 */
+}
+
+.markdown-editor-content .ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0.7em 0 0.4em;
+  line-height: 1.3;
+  color: #000000; /* 标题为纯黑色 */
+}
+
+.markdown-editor-content .ProseMirror h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 0.6em 0 0.3em;
+  line-height: 1.3;
+  color: #000000; /* 标题为纯黑色 */
+}
+
+.markdown-editor-content .ProseMirror h1:first-child,
+.markdown-editor-content .ProseMirror h2:first-child,
+.markdown-editor-content .ProseMirror h3:first-child {
+  margin-top: 0;
+}
+
+/* 引用块样式 */
+.markdown-editor-content .ProseMirror blockquote {
+  border-left: 4px solid #d9d9d9;
+  padding-left: 16px;
+  margin: 1em 0;
+  color: #333333; /* 深灰色，比纯黑稍浅，区分引用内容 */
+  font-style: italic;
+  position: relative; /* 确保光标可见 */
+}
+
+/* 列表样式 */
+.markdown-editor-content .ProseMirror ul,
+.markdown-editor-content .ProseMirror ol {
+  padding-left: 24px;
+  margin: 0.8em 0;
+  color: #000000; /* 列表文字为纯黑色 */
+}
+
+.markdown-editor-content .ProseMirror li {
+  margin: 0.3em 0;
+  min-height: 1.5em; /* 确保空列表项也有高度 */
+  position: relative; /* 确保光标可见 */
+  color: #000000; /* 列表项文字为纯黑色 */
+}
+
+.markdown-editor-content .ProseMirror li p {
+  margin: 0.2em 0;
+  color: #000000; /* 列表内段落为纯黑色 */
+}
+
+/* 行内代码样式 */
+.markdown-editor-content .ProseMirror code {
+  background-color: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #d63384;
+}
+
+/* 代码块样式 */
+.markdown-editor-content .ProseMirror pre {
+  background-color: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 1em 0;
+  overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+  position: relative; /* 确保光标可见 */
+}
+
+.markdown-editor-content .ProseMirror pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  caret-color: #1890ff; /* 代码块中的光标颜色 */
+}
+
+/* 链接样式 */
+.markdown-editor-content .ProseMirror a {
+  color: #1890ff;
+  text-decoration: underline;
+  cursor: pointer;
+  position: relative; /* 确保光标可见 */
+}
+
+.markdown-editor-content .ProseMirror a:hover {
+  color: #40a9ff;
+}
+
+/* 图片样式 */
+.markdown-editor-content .ProseMirror img.editor-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.markdown-editor-content .ProseMirror img.editor-image:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.02);
+}
+
+/* 图片选中状态 */
+.markdown-editor-content .ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+}
+
+/* 粗体 */
+.markdown-editor-content .ProseMirror strong {
+  font-weight: 700;
+  color: #000000; /* 粗体文字为纯黑色 */
+}
+
+/* 斜体 */
+.markdown-editor-content .ProseMirror em {
+  font-style: italic;
+  color: #000000; /* 斜体文字为纯黑色 */
+}
+
+/* 删除线 */
+.markdown-editor-content .ProseMirror s {
+  text-decoration: line-through;
+  color: #000000; /* 删除线文字为纯黑色 */
+}
+
+/* 水平线 */
+.markdown-editor-content .ProseMirror hr {
+  border: none;
+  border-top: 2px solid #e8e8e8;
+  margin: 2em 0;
+}
+
+/* 确保选中文本有明显的背景色 */
+.markdown-editor-content .ProseMirror ::selection {
+  background-color: #b3d8ff;
+}
+
+/* 代码块语法高亮的基础样式 */
+.markdown-editor-content .ProseMirror .hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+  background: transparent;
+}
+
+/* 确保编辑器有足够的最小高度和可见的光标区域 */
+.markdown-editor-content .ProseMirror > *:last-child {
+  margin-bottom: 1em;
+}
+
+/* 空编辑器时确保有足够的点击区域 */
+.markdown-editor-content .ProseMirror:empty {
+  min-height: 150px;
+}
+
+/* 光标闪烁动画 - 确保光标始终可见 */
+@keyframes blink-caret {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #1890ff;
+  }
+}
+
+/* 确保在所有状态下光标都可见 */
+.markdown-editor-content .ProseMirror-focused {
+  caret-color: #1890ff !important;
+}
+
+/* 确保光标所在行有足够的高度 */
+.markdown-editor-content .ProseMirror > * {
+  position: relative;
+}
+
+/* 空段落确保有最小高度，让光标可见 */
+.markdown-editor-content .ProseMirror p:empty::before {
+  content: '\200B'; /* 零宽空格，确保段落有高度 */
+  display: inline-block;
+}
+
+/* 工具栏按钮 hover 效果 */
+button[type="button"]:hover:not(:disabled) {
+  background-color: #f0f0f0;
+  border-color: #40a9ff;
+}
+
+button[type="button"]:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+button[type="button"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 全屏模式样式 */
+.markdown-editor-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background-color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 全屏模式下的工具栏 */
+.markdown-editor-fullscreen > div:first-child {
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 全屏模式下的编辑器内容 */
+.markdown-editor-fullscreen .markdown-editor-content {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 80px) !important;
+}
+
+/* 全屏模式下的 ProseMirror 编辑区 */
+.markdown-editor-fullscreen .ProseMirror {
+  min-height: calc(100vh - 120px);
+  max-width: 1200px; /* 限制最大宽度，提升阅读体验 */
+  margin: 0 auto; /* 居中显示 */
+  font-size: 16px; /* 全屏模式下字体稍大，更易阅读 */
+  line-height: 1.8; /* 增加行距，提升阅读舒适度 */
+  padding: 24px; /* 全屏模式下增加内边距 */
+  color: #000000 !important; /* 全屏模式下确保文字为纯黑色，清晰可读 */
+  font-weight: 400; /* 正常字重 */
+}
+
+/* 全屏模式下确保所有文本元素都是黑色 */
+.markdown-editor-fullscreen .ProseMirror h1,
+.markdown-editor-fullscreen .ProseMirror h2,
+.markdown-editor-fullscreen .ProseMirror h3,
+.markdown-editor-fullscreen .ProseMirror p,
+.markdown-editor-fullscreen .ProseMirror li,
+.markdown-editor-fullscreen .ProseMirror strong {
+  color: #000000 !important;
+}
+
+/* 全屏模式下的引用块颜色调整 */
+.markdown-editor-fullscreen .ProseMirror blockquote {
+  color: #1a1a1a !important;
+  border-left-color: #666666;
+}
+
+/* 全屏模式动画 */
+.markdown-editor-fullscreen {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 全屏提示淡入淡出动画 */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* 全屏模式下隐藏外部滚动条 */
+body:has(.markdown-editor-fullscreen) {
+  overflow: hidden;
+}
+
+/* 暗色主题下的光标优化（如果需要支持暗色模式） */
+@media (prefers-color-scheme: dark) {
+  .markdown-editor-content .ProseMirror {
+    caret-color: #40a9ff;
+  }
+  
+  .markdown-editor-content .ProseMirror:focus {
+    caret-color: #40a9ff;
+  }
+  
+  .markdown-editor-content .ProseMirror-focused {
+    caret-color: #40a9ff !important;
+  }
+
+  /* 全屏模式暗色背景 */
+  .markdown-editor-fullscreen {
+    background-color: #1f1f1f;
+  }
+
+  .markdown-editor-fullscreen .markdown-editor-content {
+    background-color: #2d2d2d;
+    border-color: #434343;
+  }
+
+  .markdown-editor-fullscreen .ProseMirror {
+    color: #e0e0e0;
+  }
+}
+

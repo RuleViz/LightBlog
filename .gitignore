@@ -1,0 +1,59 @@
+# 操作系统通用
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE/编辑器
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.sw?
+
+# Maven/Java 构建产物
+**/target/
+*.class
+*.log
+*.out
+*.pid
+
+# Spring Boot
+.spring-boot-devtools.properties
+
+# Node.js/Vite 前端
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.tmp/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# 环境配置
+*.env
+*.env.*
+.env
+.env.*
+
+# 上传与缓存
+uploads/
+logs/
+*.tmp
+*.bak
+
+# 压缩包
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# 部署脚本和文档
+start-frontend.bat
+Dockerfile
+Docker部署指南.md
+docker-compose.yml
+deploy.sh
+项目总览.md
+部署指南.md

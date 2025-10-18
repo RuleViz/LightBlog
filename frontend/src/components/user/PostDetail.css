@@ -1,0 +1,349 @@
+/* 文章详情页专属样式 */
+
+/* 优化文章内容排版 - 全宽布局 */
+.post-detail-main-fullwidth {
+  min-width: 0;
+  background: var(--card-background);
+  padding: 32px 48px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 100%;
+}
+
+.post-detail-main-fullwidth .ant-btn {
+  font-size: 11.2px; /* 14px * 0.8 */
+}
+
+.post-detail-main-fullwidth .markdown-content,
+.post-detail-main-fullwidth > div[style*="lineHeight"] {
+  max-width: 100%;
+  color: var(--text-color);
+}
+
+/* 优化文章标题 */
+.post-detail-main-fullwidth h1.ant-typography {
+  font-size: 33.6px; /* 42px * 0.8 */
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-color);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+/* 优化封面图片 */
+.post-detail-main-fullwidth img[style*="300px"],
+.post-detail-main-fullwidth img[style*="height: 400px"] {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-md);
+}
+
+/* 优化摘要卡片 */
+.post-detail-main-fullwidth .ant-card {
+  background: var(--background-color);
+  border: none;
+  box-shadow: none;
+}
+
+.post-detail-main-fullwidth .ant-card .ant-typography {
+  font-size: 12.8px; /* 16px * 0.8 */
+}
+
+/* 优化文章元信息 */
+.post-detail-main-fullwidth .ant-space {
+  margin-bottom: 24px;
+  font-size: 11.2px; /* 14px * 0.8 */
+}
+
+.post-detail-main-fullwidth .ant-space .ant-typography {
+  font-size: 11.2px; /* 14px * 0.8 */
+}
+
+/* 优化Tag显示 */
+.post-detail-main-fullwidth .ant-tag {
+  margin: 2px 4px;
+  padding: 4px 12px;
+  font-size: 10.4px; /* 13px * 0.8 */
+  border-radius: var(--radius-md);
+}
+
+/* Markdown内容优化 */
+.post-detail-main-fullwidth h1,
+.post-detail-main-fullwidth h2,
+.post-detail-main-fullwidth h3 {
+  color: var(--text-color);
+  margin-top: 32px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.post-detail-main-fullwidth h1 {
+  font-size: 25.6px; /* 32px * 0.8 */
+  padding-bottom: 12px;
+}
+
+.post-detail-main-fullwidth h2 {
+  font-size: 22.4px; /* 28px * 0.8 */
+  padding-bottom: 10px;
+}
+
+.post-detail-main-fullwidth h3 {
+  font-size: 19.2px; /* 24px * 0.8 */
+}
+
+.post-detail-main-fullwidth h4 {
+  font-size: 16px; /* 20px * 0.8 */
+  color: var(--text-color);
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.post-detail-main-fullwidth p {
+  line-height: 1.8;
+  margin-bottom: 16px;
+  color: var(--text-color);
+  font-size: 13.6px; /* 17px * 0.8 */
+}
+
+.post-detail-main-fullwidth ul,
+.post-detail-main-fullwidth ol {
+  margin: 16px 0;
+  padding-left: 28px;
+  line-height: 1.8;
+  font-size: 13.6px; /* 17px * 0.8 */
+}
+
+.post-detail-main-fullwidth li {
+  margin-bottom: 8px;
+  color: var(--text-color);
+  font-size: 13.6px; /* 17px * 0.8 */
+}
+
+.post-detail-main-fullwidth blockquote {
+  border-left: 4px solid var(--primary-color);
+  margin: 24px 0;
+  padding: 16px 20px;
+  background: var(--background-color);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--text-color-secondary);
+  font-style: italic;
+  font-size: 13.6px; /* 17px * 0.8 */
+}
+
+.post-detail-main-fullwidth img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: 24px 0;
+  display: block;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 行内代码样式 */
+.post-detail-main-fullwidth code.inline-code,
+.post-detail-main-fullwidth p code,
+.post-detail-main-fullwidth li code {
+  background: var(--background-color);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.864em; /* 0.9em * 0.8 * 1.2 */
+  color: #e83e8c;
+  border: 1px solid var(--border-color);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-weight: 500;
+}
+
+/* 代码块容器 */
+.post-detail-main-fullwidth pre {
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: 24px 0 !important;
+  font-size: 13.44px; /* 14px * 0.8 * 1.2 */
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* 确保语法高亮器的样式不被覆盖 */
+.post-detail-main-fullwidth pre > div {
+  background: transparent !important;
+}
+
+.post-detail-main-fullwidth pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+}
+
+/* 语法高亮行号 */
+.post-detail-main-fullwidth .linenumber {
+  min-width: 2.5em;
+  padding-right: 1em;
+  text-align: right;
+  user-select: none;
+  opacity: 0.5;
+}
+
+.post-detail-main-fullwidth table {
+  font-size: 12.8px; /* 16px * 0.8 */
+}
+
+.post-detail-main-fullwidth th,
+.post-detail-main-fullwidth td {
+  font-size: 12.8px; /* 16px * 0.8 */
+}
+
+/* ====== 悬浮侧边栏样式 ====== */
+.post-detail-sidebar-floating {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 380px;
+  height: 100vh;
+  background: var(--card-background);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.post-detail-sidebar-floating.visible {
+  right: 0;
+}
+
+/* 侧边栏头部 */
+.sidebar-floating-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: var(--background-color);
+  border-bottom: 2px solid var(--border-color);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.sidebar-floating-header .ant-btn {
+  color: var(--text-color-secondary);
+}
+
+.sidebar-floating-header .ant-btn:hover {
+  color: var(--primary-color);
+  background: var(--background-color);
+}
+
+/* 侧边栏内容区 */
+.sidebar-floating-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.sidebar-floating-content .sidebar-card {
+  margin-bottom: 16px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-floating-content .sidebar-card:last-child {
+  margin-bottom: 0;
+}
+
+.sidebar-floating-content .sidebar-card .ant-card-head {
+  background: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 16px;
+}
+
+.sidebar-floating-content .sidebar-card .ant-card-body {
+  padding: 16px;
+}
+
+.sidebar-floating-content .ant-space-item {
+  width: 100%;
+}
+
+.sidebar-floating-content .ant-space-item > div {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-floating-content .ant-space-item:last-child > div {
+  border-bottom: none;
+}
+
+/* 遮罩层 */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .post-detail-main-fullwidth {
+    padding: 24px 20px;
+  }
+
+  .post-detail-main-fullwidth h1.ant-typography {
+    font-size: 25.6px; /* 32px * 0.8 */
+  }
+
+  .post-detail-main-fullwidth img[style*="300px"] {
+    height: 250px;
+  }
+
+  .post-detail-main-fullwidth p {
+    font-size: 12.8px; /* 16px * 0.8 */
+  }
+
+  .post-detail-sidebar-floating {
+    width: 100%;
+    right: -100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-detail-main-fullwidth {
+    padding: 20px 16px;
+  }
+
+  .post-detail-main-fullwidth h1.ant-typography {
+    font-size: 22.4px; /* 28px * 0.8 */
+  }
+
+  .post-detail-main-fullwidth img[style*="300px"] {
+    height: 200px;
+  }
+
+  .post-detail-main-fullwidth p {
+    font-size: 12px; /* 15px * 0.8 */
+  }
+}
+

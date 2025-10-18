@@ -1,0 +1,46 @@
+# Maven构建目录
+/target/
+**/target/
+
+# IntelliJ IDEA配置
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Java编译产物
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+
+# 日志文件
+logs/
+**/logs/
+
+# 操作系统文件
+Thumbs.db
+.DS_Store
+
+# Maven配置
+!pom.xml
+!**/pom.xml
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+
+# 环境配置文件
+*.properties
+*.yml
+!application.yml
+!application.properties
+
+# 上传文件目录
+uploads/
+**/uploads/
+
+backend_blogAI/

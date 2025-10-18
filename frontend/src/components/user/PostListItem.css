@@ -1,0 +1,172 @@
+.post-list-item {
+  background: var(--card-background);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  /* 性能优化：启用GPU加速和减少重绘 */
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+.post-list-item:hover {
+  transform: translate3d(0, -3px, 0);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+}
+
+.post-list-item-content {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* 封面图片 */
+.post-cover {
+  flex-shrink: 0;
+  width: 180px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--background-color);
+}
+
+.post-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.post-list-item:hover .post-cover img {
+  transform: scale(1.05);
+}
+
+/* 主要内容区 */
+.post-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.post-title {
+  margin: 0 !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  color: var(--text-color) !important;
+  transition: color 0.2s ease;
+  letter-spacing: -0.3px;
+}
+
+.post-list-item:hover .post-title {
+  color: var(--primary-color) !important;
+}
+
+.lock-icon {
+  color: #faad14;
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* 摘要 */
+.post-excerpt {
+  margin: 0 !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  color: var(--text-color-secondary) !important;
+}
+
+/* 元数据 */
+.post-meta {
+  margin-top: 4px;
+}
+
+.post-meta .ant-space-item {
+  font-size: 14px;
+}
+
+.post-tags {
+  margin-left: 8px;
+}
+
+.post-tags .ant-tag {
+  cursor: pointer;
+  margin: 0;
+  padding: 2px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+
+.post-tags .ant-tag:hover {
+  opacity: 0.8;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .post-list-item {
+    padding: 20px 16px;
+    margin-bottom: 16px;
+  }
+
+  .post-list-item-content {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .post-cover {
+    width: 100%;
+    height: 200px;
+  }
+
+  .post-title {
+    font-size: 18px !important;
+  }
+
+  .post-excerpt {
+    font-size: 14px !important;
+  }
+
+  .post-meta {
+    font-size: 13px;
+  }
+
+  .post-meta .ant-space {
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-list-item {
+    padding: 16px 12px;
+  }
+
+  .post-cover {
+    height: 160px;
+  }
+
+  .post-title {
+    font-size: 16px !important;
+  }
+
+  .post-tags .ant-tag {
+    font-size: 12px;
+    padding: 1px 8px;
+  }
+}
+

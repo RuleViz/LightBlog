@@ -1,0 +1,124 @@
+.image-upload-wrapper {
+  margin-bottom: 24px;
+}
+
+.cover-image-uploader {
+  width: 100%;
+}
+
+.cover-image-uploader .ant-upload {
+  width: 100% !important;
+  height: 320px !important;
+  margin: 0 !important;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--background-secondary);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.cover-image-uploader .ant-upload:hover {
+  border-color: var(--primary-color);
+  background: var(--card-background);
+}
+
+.upload-button-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-color-secondary);
+  font-size: 16px;
+}
+
+.upload-button-content .anticon {
+  font-size: 48px;
+  color: var(--primary-color);
+  margin-bottom: 16px;
+}
+
+.uploaded-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.uploaded-image-container .ant-image {
+  width: 100%;
+  height: 100%;
+}
+
+.uploaded-image-container .ant-image-img {
+  border-radius: var(--radius-lg);
+}
+
+.image-actions-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: var(--radius-lg);
+}
+
+.uploaded-image-container:hover .image-actions-overlay {
+  opacity: 1;
+}
+
+.delete-icon {
+  font-size: 32px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 12px;
+  border-radius: 50%;
+  background: rgba(255, 77, 79, 0.8);
+}
+
+.delete-icon:hover {
+  background: rgba(255, 77, 79, 1);
+  transform: scale(1.1);
+}
+
+.upload-hint {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: var(--background-secondary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--primary-color);
+}
+
+.upload-hint p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: var(--text-color-secondary);
+  line-height: 1.6;
+}
+
+.upload-hint p:first-child {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .cover-image-uploader .ant-upload {
+    height: 240px !important;
+  }
+
+  .upload-button-content .anticon {
+    font-size: 36px;
+  }
+
+  .delete-icon {
+    font-size: 24px;
+  }
+}
+
