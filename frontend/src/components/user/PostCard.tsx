@@ -3,7 +3,7 @@ import { Card, Tag, Space, Typography } from 'antd';
 import { EyeOutlined, HeartOutlined, MessageOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { Post, PostStatus, Visibility } from '@/types';
-import { formatDate } from '@/utils/date';
+// import { formatDate } from '@/utils/date';
 import LazyImage from '@/components/common/LazyImage';
 
 const { Title, Paragraph } = Typography;

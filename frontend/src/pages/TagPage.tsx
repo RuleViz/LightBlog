@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Breadcrumb, Empty, Button, Tag } from 'antd';
+import { Typography, Breadcrumb, Empty, Button, Tag } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
@@ -8,7 +8,7 @@ import { fetchTagBySlug } from '@/store/slices/tagsSlice';
 import PostList from '@/components/user/PostList';
 import Loading from '@/components/common/Loading';
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 const TagPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();

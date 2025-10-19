@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Space, Tag, Popconfirm, message, Modal, Form, Input, ColorPicker } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
@@ -121,7 +122,7 @@ const TagList: React.FC = () => {
     });
   };
 
-  const columns = [
+  const columns: ColumnsType<TagType> = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -171,7 +172,7 @@ const TagList: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      render: (_, record: TagType) => (
+      render: (_: any, record: TagType) => (
         <Space size="middle">
           <Button
             type="link"
@@ -267,7 +268,6 @@ const TagList: React.FC = () => {
             <ColorPicker 
               showText 
               format="hex"
-              placeholder="选择颜色"
             />
           </Form.Item>
         </Form>

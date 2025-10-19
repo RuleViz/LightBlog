@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Post, PostCreateRequest, PostUpdateRequest, PageResult, PaginationParams, SearchParams } from '@/types';
+import { Post, PostCreateRequest, PostUpdateRequest, PaginationParams, SearchParams } from '@/types';
 import { apiService } from '@/services/api';
 
 interface PostsState {

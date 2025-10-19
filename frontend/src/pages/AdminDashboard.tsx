@@ -7,7 +7,7 @@ import { fetchAdminPosts } from '@/store/slices/postsSlice';
 import { fetchAllCategories } from '@/store/slices/categoriesSlice';
 import { fetchAllTags } from '@/store/slices/tagsSlice';
 import { apiService } from '@/services/api';
-import Loading from '@/components/common/Loading';
+// import Loading from '@/components/common/Loading';
 
 const { Title } = Typography;
 
@@ -46,8 +46,8 @@ const AdminDashboard: React.FC = () => {
   }, [dispatch]);
 
   const totalViews = posts.reduce((sum, post) => sum + post.viewCount, 0);
-  const totalLikes = posts.reduce((sum, post) => sum + post.likeCount, 0);
-  const totalComments = posts.reduce((sum, post) => sum + post.commentCount, 0);
+  // const totalLikes = posts.reduce((sum, post) => sum + post.likeCount, 0);
+  // const totalComments = posts.reduce((sum, post) => sum + post.commentCount, 0);
 
   const recentPosts = posts.slice(0, 5);
   const recentCategories = allCategories.slice(0, 5);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Popconfirm, message, Modal, Form, Input, InputNumber, Space } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
@@ -105,7 +106,7 @@ const CategoryList: React.FC = () => {
     setSearchParams({ page: page - 1, size });
   };
 
-  const columns = [
+  const columns: ColumnsType<Category> = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -146,7 +147,7 @@ const CategoryList: React.FC = () => {
       key: 'action',
       width: 180,
       align: 'center',
-      render: (_, record: Category) => (
+      render: (_: any, record: Category) => (
         <Space size="small" style={{ display: 'inline-flex' }}>
           <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
             编辑

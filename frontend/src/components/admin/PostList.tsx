@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Space, Tag, Popconfirm, message } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,7 +18,6 @@ const PostList: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { posts, pagination, loading, error } = useSelector((state: RootState) => state.posts);
   const { allCategories } = useSelector((state: RootState) => state.categories);
-  const { allTags } = useSelector((state: RootState) => state.tags);
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchParams, setSearchParams] = useState({
@@ -75,7 +75,7 @@ const PostList: React.FC = () => {
     return <Tag color={config.color}>{config.text}</Tag>;
   };
 
-  const columns = [
+  const columns: ColumnsType<Post> = [
     {
       title: '标题',
       dataIndex: 'title',
@@ -132,7 +132,7 @@ const PostList: React.FC = () => {
       width: 220,
       className: 'action-column',
       align: 'left',
-      render: (_, record: Post) => (
+      render: (_: any, record: Post) => (
         <Space size="small" wrap>
           <Button
             type="link"

@@ -7,7 +7,7 @@ import { setTheme } from '@/store/slices/uiSlice';
 
 interface ThemeToggleProps {
   size?: 'small' | 'middle' | 'large';
-  type?: 'default' | 'text' | 'link' | 'ghost' | 'primary' | 'dashed';
+  type?: 'default' | 'text' | 'link' | 'primary' | 'dashed';
   showText?: boolean;
 }
 

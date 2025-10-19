@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageHeader as AntPageHeader, Breadcrumb } from 'antd';
+import { Breadcrumb } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const breadcrumbItems = breadcrumb?.map((item, index) => ({
+  const breadcrumbItems = breadcrumb?.map((item) => ({
     title: item.path ? (
       <a onClick={() => navigate(item.path!)}>{item.title}</a>
     ) : (
@@ -32,21 +32,29 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   }));
 
   return (
-    <AntPageHeader
-      title={title}
-      subTitle={subTitle}
-      onBack={onBack}
-      extra={extra}
-      breadcrumb={{
-        items: [
-          {
-            title: <HomeOutlined />,
-            path: '/',
-          },
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+            {onBack && (
+              <span onClick={onBack} style={{ cursor: 'pointer' }} title="返回">
+                <HomeOutlined />
+              </span>
+            )}
+            {title}
+          </div>
+          {subTitle && <div style={{ color: '#999' }}>{subTitle}</div>}
+        </div>
+        {extra}
+      </div>
+      <Breadcrumb
+        items={[
+          { title: <HomeOutlined onClick={() => navigate('/')} /> },
           ...(breadcrumbItems || []),
-        ],
-      }}
-    />
+        ]}
+        style={{ marginTop: 8 }}
+      />
+    </div>
   );
 };
 

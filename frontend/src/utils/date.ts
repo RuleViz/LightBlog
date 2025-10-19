@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.locale('zh-cn');
+dayjs.extend(relativeTime);
 
 export const formatDate = (date: string | Date): string => {
   return dayjs(date).format('YYYY-MM-DD HH:mm:ss');

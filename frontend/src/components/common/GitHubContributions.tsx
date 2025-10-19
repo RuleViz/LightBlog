@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, Spin, message, Tooltip } from 'antd';
+import { Card, Typography, Spin, Tooltip } from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface ContributionData {
   date: string;

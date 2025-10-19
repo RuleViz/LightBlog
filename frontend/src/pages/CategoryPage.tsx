@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Breadcrumb, Empty, Button } from 'antd';
-import { HomeOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Typography, Breadcrumb, Empty, Button } from 'antd';
+import { HomeOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
 import { fetchCategoryBySlug } from '@/store/slices/categoriesSlice';

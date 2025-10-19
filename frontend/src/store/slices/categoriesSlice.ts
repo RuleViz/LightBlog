@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Category, CategoryCreateRequest, CategoryUpdateRequest, PageResult, PaginationParams } from '@/types';
+import { Category, CategoryCreateRequest, CategoryUpdateRequest, PaginationParams } from '@/types';
 import { apiService } from '@/services/api';
 
 interface CategoriesState {
@@ -234,7 +234,7 @@ const categoriesSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchCategoryChildren.fulfilled, (state, action) => {
+      .addCase(fetchCategoryChildren.fulfilled, (state) => {
         state.loading = false;
         // 子分类可以单独存储或合并到现有列表中
       })

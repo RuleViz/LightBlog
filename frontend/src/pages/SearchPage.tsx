@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Empty } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
+import { Typography, Button, Empty } from 'antd';
+// import { HomeOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
 import { fetchPosts } from '@/store/slices/postsSlice';
@@ -11,7 +11,7 @@ import Loading from '@/components/common/Loading';
 const { Title, Paragraph } = Typography;
 
 const SearchPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { posts, loading } = useSelector((state: RootState) => state.posts);

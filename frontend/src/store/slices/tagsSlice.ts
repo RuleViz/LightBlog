@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Tag, TagCreateRequest, TagUpdateRequest, PageResult, PaginationParams } from '@/types';
+import { Tag, TagCreateRequest, TagUpdateRequest, PaginationParams } from '@/types';
 import { apiService } from '@/services/api';
 
 interface TagsState {
