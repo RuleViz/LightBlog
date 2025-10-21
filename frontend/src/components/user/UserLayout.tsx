@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Button, Input, Drawer } from 'antd';
-import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
+import React, { useEffect } from 'react';
+import { Layout, Input, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@/store';
+import { fetchAllCategories } from '@/store/slices/categoriesSlice';
 import ThemeToggle from '@/components/common/ThemeToggle';
 
 const { Header, Content, Footer } = Layout;
@@ -12,28 +14,12 @@ const { Search } = Input;
 const UserLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
   const { allCategories } = useSelector((state: RootState) => state.categories);
-  const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const menuItems = [
-    {
-      key: '/',
-      label: '首页',
-    },
-    {
-      key: '/categories',
-      label: '分类',
-      children: allCategories.map(category => ({
-        key: `/categories/${category.slug}`,
-        label: category.name,
-      })),
-    },
-  ];
-
-  const handleMenuClick = ({ key }: { key: string }) => {
-    navigate(key);
-    setDrawerVisible(false);
-  };
+  useEffect(() => {
+    dispatch(fetchAllCategories());
+  }, [dispatch]);
 
   const handleSearch = (value: string) => {
     if (value.trim()) {
@@ -41,20 +27,62 @@ const UserLayout: React.FC = () => {
     }
   };
 
+  const isActive = (path: string) => location.pathname === path;
+  const isCategoryActive = location.pathname.startsWith('/categories');
+
+  const topCategories = allCategories.slice(0, 6);
+
+  const dropdownItems: MenuProps['items'] = [
+    ...topCategories.map(category => ({
+      key: category.slug,
+      label: category.name,
+    })),
+    {
+      type: 'divider',
+    },
+    {
+      key: 'all',
+      label: '全部',
+    },
+  ];
+
+  const handleCategoryMenuClick: MenuProps['onClick'] = ({ key }) => {
+    if (key === 'all') {
+      navigate('/categories');
+      return;
+    }
+
+    navigate(`/categories/${key}`);
+  };
+
   return (
-    <Layout style={{ minHeight: '100vh', background: 'var(--background-color)' }}>
-      <Header className="modern-header">
+    <Layout style={{ minHeight: '100vh', background: 'var(--background-color)', overflow: 'visible' }}>
+      <Header className="modern-header" style={{ overflow: 'visible' }}>
         <div className="header-content">
           <div className="header-left">
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              onClick={() => setDrawerVisible(true)}
-              className="menu-button"
-            />
             <div className="logo-simple" onClick={() => navigate('/')}>
               RuleViz
             </div>
+            
+            <nav className="nav-menu">
+              <div 
+                className={`nav-item ${isActive('/') ? 'active' : ''}`}
+                onClick={() => navigate('/')}
+              >
+                首页
+              </div>
+              
+              <Dropdown
+                menu={{ items: dropdownItems, onClick: handleCategoryMenuClick }}
+                trigger={['hover']}
+                overlayClassName="nav-dropdown-menu"
+                placement="bottom"
+              >
+                <div className={`nav-item ${isCategoryActive ? 'active' : ''}`}>
+                  分类
+                </div>
+              </Dropdown>
+            </nav>
           </div>
 
           <div className="header-right">
@@ -105,21 +133,6 @@ const UserLayout: React.FC = () => {
           </div>
         </div>
       </Footer>
-
-      <Drawer
-        title="导航菜单"
-        placement="left"
-        onClose={() => setDrawerVisible(false)}
-        open={drawerVisible}
-        width={280}
-      >
-        <Menu
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems}
-          onClick={handleMenuClick}
-        />
-      </Drawer>
     </Layout>
   );
 };

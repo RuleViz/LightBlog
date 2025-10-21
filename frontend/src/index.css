@@ -500,6 +500,7 @@ body {
   line-height: 72px !important;
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
+  overflow: visible !important;
 }
 
 .header-content {
@@ -510,12 +511,23 @@ body {
   align-items: center;
   justify-content: space-between;
   height: 72px;
+  overflow: visible !important;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 16px;
+  overflow: visible !important;
+}
+
+/* 确保Ant Design的Layout和Header不裁剪下拉菜单 */
+.ant-layout-header {
+  overflow: visible !important;
+}
+
+.ant-layout {
+  overflow: visible !important;
 }
 
 .menu-button {
@@ -983,4 +995,123 @@ body {
   .post-detail-container {
     padding: 20px 12px;
   }
+}
+
+/* ====== 自定义导航菜单样式 ====== */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 32px;
+  height: 72px;
+}
+
+.nav-item {
+  position: relative;
+  padding: 0 20px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  user-select: none;
+}
+
+.nav-item:hover {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.nav-item.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+/* Dropdown 菜单覆盖样式 */
+.nav-dropdown-menu .ant-dropdown-menu {
+  padding: 8px 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+}
+
+.nav-dropdown-menu .ant-dropdown-menu-item {
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+.nav-dropdown-menu .ant-dropdown-menu-item-selected,
+.nav-dropdown-menu .ant-dropdown-menu-item:hover {
+  background: var(--background-color);
+  color: var(--primary-color);
+}
+
+.nav-dropdown-menu .ant-dropdown-menu-item-active {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.nav-dropdown-menu .ant-dropdown-menu-item:not(.ant-dropdown-menu-item-disabled) {
+  cursor: pointer;
+}
+
+.nav-dropdown-menu .ant-dropdown-menu-divider {
+  margin: 6px 0;
+}
+
+.nav-dropdown-menu .ant-dropdown-menu-item:last-child {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* 响应式：在小屏幕上隐藏导航菜单 */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+  }
+}
+
+/* ====== 分类卡片样式 ====== */
+.category-card {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md) !important;
+}
+
+.category-card .ant-card-body {
+  padding: 24px;
+}
+
+.category-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.category-card-title {
+  margin: 0 !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--text-color) !important;
+}
+
+.category-card-description {
+  margin: 0 !important;
+  font-size: 14px !important;
+  color: var(--text-color-secondary) !important;
+  line-height: 1.6 !important;
 }

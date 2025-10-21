@@ -17,6 +17,7 @@ const PostDetail = lazy(() => import('@/components/user/PostDetail'));
 const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
 const TagPage = lazy(() => import('@/pages/TagPage'));
 const SearchPage = lazy(() => import('@/pages/SearchPage'));
+const AllCategoriesPage = lazy(() => import('@/pages/AllCategoriesPage'));
 
 // 管理端页面懒加载
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
@@ -74,6 +75,7 @@ const AppContent: React.FC = () => {
             {/* 用户端路由 */}
             <Route path="/" element={<UserLayout />}>
               <Route index element={<Home />} />
+              <Route path="categories" element={<AllCategoriesPage />} />
               <Route path="posts/:slug" element={<PostDetail />} />
               <Route path="categories/:slug" element={<CategoryPage />} />
               <Route path="tags/:slug" element={<TagPage />} />
@@ -88,6 +90,7 @@ const AppContent: React.FC = () => {
               <Route path="posts/:id" element={<PostDetail />} />
               <Route path="posts/:id/edit" element={<PostForm />} />
               <Route path="categories" element={<CategoryList />} />
+              <Route path="categories/:id" element={<CategoryList />} />
               <Route path="tags" element={<TagList />} />
             </Route>
           </Routes>
