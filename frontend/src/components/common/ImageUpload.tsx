@@ -51,7 +51,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
       setLoading(false);
       const response = info.file.response;
       if (response && response.url) {
-        const fullUrl = `http://localhost:8080${response.url}`;
+        const fullUrl = response.url;
         setImageUrl(fullUrl);
         onChange?.(fullUrl);
         message.success('图片上传成功！');
@@ -87,7 +87,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
         listType="picture-card"
         className="cover-image-uploader"
         showUploadList={false}
-        action="http://localhost:8080/api/upload/image"
+        action="/api/upload/image"
         beforeUpload={beforeUpload}
         onChange={handleChange}
       >

@@ -143,7 +143,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://localhost:8080/api/upload/image', {
+      const response = await fetch('/api/upload/image', {
         method: 'POST',
         body: formData,
       });
@@ -154,7 +154,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
       const data = await response.json();
       if (data && data.url) {
-        const fullUrl = `http://localhost:8080${data.url}`;
+        const fullUrl = data.url;
         
         // 在光标位置插入图片
         editor.chain().focus().setImage({ src: fullUrl }).run();
