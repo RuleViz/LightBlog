@@ -51,9 +51,8 @@ logs/
 
 # 部署脚本和文档
 start-frontend.bat
-Dockerfile
 Docker部署指南.md
-docker-compose.yml
 deploy.sh
 项目总览.md
 部署指南.md
+.env.example

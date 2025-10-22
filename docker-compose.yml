@@ -58,7 +58,8 @@ services:
     networks:
       - blog-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      # 使用文档页作为只读健康检查端点，避免需要实现专用 /api/health
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/api/doc.html || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

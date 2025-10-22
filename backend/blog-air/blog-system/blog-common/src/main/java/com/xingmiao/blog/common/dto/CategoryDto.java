@@ -20,6 +20,7 @@ public class CategoryDto {
     private Integer sortOrder;
     private Boolean isActive;
     private String description;
+    private Integer postCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -216,6 +216,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .level(category.getLevel())
                 .sortOrder(category.getSortOrder())
                 .description(category.getDescription())
+                .postCount((int) postRepository.countByCategory_IdAndDeletedAtIsNull(category.getId()))
                 .createdAt(category.getCreatedAt())
                 .updatedAt(category.getUpdatedAt())
                 .build();

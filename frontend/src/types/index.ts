@@ -52,6 +52,7 @@ export interface Category {
   level: number;
   sortOrder: number;
   description?: string;
+  postCount?: number;
   createdAt: string;
   updatedAt: string;
 }
