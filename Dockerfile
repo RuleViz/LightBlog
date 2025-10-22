@@ -6,8 +6,8 @@ WORKDIR /app
 # 复制 pom.xml 和项目文件
 COPY backend/blog-air/blog-system ./
 
-# 构建项目
-RUN mvn clean package -DskipTests=true
+# 构建项目（仅构建 blog-app 模块，彻底跳过测试的编译与执行）
+RUN mvn -B -T 1C -Dmaven.test.skip=true -DskipTests clean package -pl blog-app -am
 
 # 第二阶段：运行镜像
 FROM eclipse-temurin:17-jre-alpine
