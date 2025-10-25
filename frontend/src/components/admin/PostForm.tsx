@@ -12,7 +12,6 @@ import Loading from '@/components/common/Loading';
 import MarkdownEditor from '@/components/common/MarkdownEditor';
 import AIDialog from '@/components/common/AIDialog';
 import AIService from '@/services/ai';
-import { apiService } from '@/services/api';
 import ImageUpload from '@/components/common/ImageUpload';
 
 const { Option } = Select;
