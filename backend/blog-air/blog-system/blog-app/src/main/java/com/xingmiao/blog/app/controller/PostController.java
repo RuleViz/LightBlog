@@ -263,6 +263,24 @@ public class PostController {
     }
 
     /**
+     * 管理端根据ID查询文章（无权限限制）
+     */
+    @GetMapping("/admin/{id}")
+    @Operation(summary = "管理端根据ID查询文章", description = "管理端查询文章详情，不进行密码验证，用于编辑文章")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "查询成功", 
+                    content = @Content(schema = @Schema(implementation = PostDto.class))),
+        @ApiResponse(responseCode = "404", description = "文章不存在"),
+        @ApiResponse(responseCode = "500", description = "服务器内部错误")
+    })
+    public ResponseEntity<PostDto> adminGetById(
+            @Parameter(description = "文章ID", required = true) @PathVariable("id") Long id) {
+        return postService.getById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
      * 获取文章统计信息
      */
     @GetMapping("/stats")

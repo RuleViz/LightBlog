@@ -44,8 +44,18 @@
 }
 
 /* 优化摘要卡片 */
-.post-detail-main-fullwidth .ant-card {
+.post-detail-main-fullwidth .excerpt-card {
   background: var(--background-color);
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+
+.post-detail-main-fullwidth .excerpt-card .ant-card-body {
+  background: var(--background-color);
+}
+
+.post-detail-main-fullwidth .ant-card {
+  background: var(--card-background);
   border: none;
   box-shadow: none;
 }
@@ -77,8 +87,8 @@
 .post-detail-main-fullwidth h2,
 .post-detail-main-fullwidth h3 {
   color: var(--text-color);
-  margin-top: 32px;
-  margin-bottom: 16px;
+  margin-top: 24px;
+  margin-bottom: 12px;
   font-weight: 700;
 }
 
@@ -99,36 +109,36 @@
 .post-detail-main-fullwidth h4 {
   font-size: 16px; /* 20px * 0.8 */
   color: var(--text-color);
-  margin-top: 24px;
-  margin-bottom: 12px;
+  margin-top: 20px;
+  margin-bottom: 10px;
   font-weight: 600;
 }
 
 .post-detail-main-fullwidth p {
-  line-height: 1.8;
-  margin-bottom: 16px;
+  line-height: 1.6;
+  margin-bottom: 12px;
   color: var(--text-color);
   font-size: 13.6px; /* 17px * 0.8 */
 }
 
 .post-detail-main-fullwidth ul,
 .post-detail-main-fullwidth ol {
-  margin: 16px 0;
+  margin: 12px 0;
   padding-left: 28px;
-  line-height: 1.8;
+  line-height: 1.6;
   font-size: 13.6px; /* 17px * 0.8 */
 }
 
 .post-detail-main-fullwidth li {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--text-color);
   font-size: 13.6px; /* 17px * 0.8 */
 }
 
 .post-detail-main-fullwidth blockquote {
   border-left: 4px solid var(--primary-color);
-  margin: 24px 0;
-  padding: 16px 20px;
+  margin: 16px 0;
+  padding: 12px 16px;
   background: var(--background-color);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   color: var(--text-color-secondary);
@@ -140,7 +150,7 @@
   max-width: 100%;
   height: auto;
   border-radius: var(--radius-md);
-  margin: 24px 0;
+  margin: 16px 0;
   display: block;
   box-shadow: var(--shadow-sm);
 }
@@ -159,13 +169,94 @@
   font-weight: 500;
 }
 
+/* macOS风格代码块包装器 */
+.post-detail-main-fullwidth .code-block-wrapper {
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--background-color);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* 暗色主题下的边框 */
+[data-theme='dark'] .post-detail-main-fullwidth .code-block-wrapper {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 代码块头部 */
+.post-detail-main-fullwidth .code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--card-background);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* macOS风格的三个圆点 */
+.post-detail-main-fullwidth .code-block-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.post-detail-main-fullwidth .code-block-dots:hover .dot {
+  opacity: 1;
+}
+
+.post-detail-main-fullwidth .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.post-detail-main-fullwidth .dot-red {
+  background: #ff5f56;
+  border: 1px solid #e0443e;
+}
+
+.post-detail-main-fullwidth .dot-yellow {
+  background: #ffbd2e;
+  border: 1px solid #dea123;
+}
+
+.post-detail-main-fullwidth .dot-green {
+  background: #27c93f;
+  border: 1px solid #1aab29;
+}
+
+/* 代码语言标签 */
+.post-detail-main-fullwidth .code-block-language {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 复制按钮 */
+.post-detail-main-fullwidth .code-block-copy-btn {
+  color: var(--text-color-secondary);
+  transition: all 0.2s ease;
+}
+
+.post-detail-main-fullwidth .code-block-copy-btn:hover {
+  color: var(--primary-color);
+  background: var(--background-color) !important;
+}
+
 /* 代码块容器 */
 .post-detail-main-fullwidth pre {
   border-radius: var(--radius-md);
   overflow-x: auto;
-  margin: 24px 0 !important;
+  margin: 16px 0 !important;
   font-size: 13.44px; /* 14px * 0.8 * 1.2 */
-  box-shadow: var(--shadow-md) !important;
 }
 
 /* 确保语法高亮器的样式不被覆盖 */
@@ -326,6 +417,20 @@
   .post-detail-sidebar-floating {
     width: 100%;
     right: -100%;
+  }
+
+  /* 代码块头部移动端优化 */
+  .post-detail-main-fullwidth .code-block-header {
+    padding: 8px 12px;
+  }
+
+  .post-detail-main-fullwidth .code-block-language {
+    font-size: 10px;
+  }
+
+  .post-detail-main-fullwidth .dot {
+    width: 10px;
+    height: 10px;
   }
 }
 

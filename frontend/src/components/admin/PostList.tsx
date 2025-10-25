@@ -59,7 +59,6 @@ const PostList: React.FC = () => {
     const statusMap = {
       [PostStatus.DRAFT]: { color: 'default', text: '草稿' },
       [PostStatus.PUBLISHED]: { color: 'success', text: '已发布' },
-      [PostStatus.ARCHIVED]: { color: 'warning', text: '已归档' },
     };
     const config = statusMap[status];
     return <Tag color={config.color}>{config.text}</Tag>;
@@ -68,7 +67,6 @@ const PostList: React.FC = () => {
   const getVisibilityTag = (visibility: Visibility) => {
     const visibilityMap = {
       [Visibility.PUBLIC]: { color: 'green', text: '公开' },
-      [Visibility.PRIVATE]: { color: 'red', text: '私有' },
       [Visibility.PASSWORD]: { color: 'orange', text: '密码保护' },
     };
     const config = visibilityMap[visibility];

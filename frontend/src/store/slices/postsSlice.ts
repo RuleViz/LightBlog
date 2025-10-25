@@ -53,11 +53,25 @@ export const fetchPostById = createAsyncThunk(
   }
 );
 
+export const fetchAdminPostById = createAsyncThunk(
+  'posts/fetchAdminPostById',
+  async (id: number) => {
+    const response = await apiService.getAdminPostById(id);
+    return response;
+  }
+);
+
 export const fetchPostBySlug = createAsyncThunk(
   'posts/fetchPostBySlug',
-  async (slug: string) => {
-    const response = await apiService.getPostBySlug(slug);
-    return response;
+  async (slug: string, { rejectWithValue }) => {
+    try {
+      const response = await apiService.getPostBySlug(slug);
+      return response;
+    } catch (error: any) {
+      // 捕获错误并传递状态码
+      const status = error?.response?.status;
+      return rejectWithValue({ status, message: error?.message || '获取文章失败' });
+    }
   }
 );
 
@@ -166,6 +180,19 @@ const postsSlice = createSlice({
         state.currentPost = action.payload;
       })
       .addCase(fetchPostById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || '获取文章详情失败';
+      })
+      // 管理端根据ID获取文章
+      .addCase(fetchAdminPostById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAdminPostById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentPost = action.payload;
+      })
+      .addCase(fetchAdminPostById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || '获取文章详情失败';
       })

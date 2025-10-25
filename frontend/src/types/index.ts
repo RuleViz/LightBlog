@@ -6,15 +6,13 @@ export enum ContentType {
 }
 
 export enum PostStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED'
+  DRAFT = 'DRAFT',        // 草稿：正在编辑，不可见
+  PUBLISHED = 'PUBLISHED' // 已发布：可选择公开或密码保护
 }
 
 export enum Visibility {
-  PUBLIC = 'PUBLIC',
-  PRIVATE = 'PRIVATE',
-  PASSWORD = 'PASSWORD'
+  PUBLIC = 'PUBLIC',      // 公开：所有人可见
+  PASSWORD = 'PASSWORD'   // 密码保护：需要密码才能查看
 }
 
 export enum LikeTargetType {

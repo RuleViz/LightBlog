@@ -73,6 +73,12 @@ class ApiService {
     return response.data;
   }
 
+  // 管理端获取文章详情（无权限限制）
+  async getAdminPostById(id: number): Promise<Post> {
+    const response = await this.api.get(`/posts/admin/${id}`);
+    return response.data;
+  }
+
   async getPostBySlug(slug: string): Promise<Post> {
     const response = await this.api.get(`/posts/slug/${slug}`);
     return response.data;

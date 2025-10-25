@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Typography, Spin, Tooltip } from 'antd';
+import React, { useState } from 'react';
+import { Collapse, Typography, Spin, Tooltip } from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
@@ -15,14 +15,20 @@ interface GitHubContributionsProps {
 }
 
 const GitHubContributions: React.FC<GitHubContributionsProps> = ({ className }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [contributions, setContributions] = useState<ContributionData[]>([]);
   const [username, setUsername] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [hasLoaded, setHasLoaded] = useState(false); // 追踪是否已加载过数据
 
-  useEffect(() => {
-    fetchContributions();
-  }, []);
+  // 处理折叠面板展开/折叠
+  const handleCollapseChange = (keys: string | string[]) => {
+    const isExpanded = Array.isArray(keys) ? keys.length > 0 : !!keys;
+    // 只在首次展开且未加载过数据时才请求
+    if (isExpanded && !hasLoaded) {
+      fetchContributions();
+    }
+  };
 
   const fetchContributions = async () => {
     try {
@@ -34,12 +40,15 @@ const GitHubContributions: React.FC<GitHubContributionsProps> = ({ className }) 
         setContributions(result.data || []);
         setUsername(result.username || '');
         setError('');
+        setHasLoaded(true); // 标记已加载
       } else {
         setError(result.error || '获取GitHub贡献数据失败');
+        setHasLoaded(true); // 即使失败也标记已加载，避免重复请求
       }
     } catch (err) {
       setError('网络错误，请稍后重试');
       console.error('获取GitHub贡献数据失败:', err);
+      setHasLoaded(true); // 即使失败也标记已加载
     } finally {
       setLoading(false);
     }
@@ -222,62 +231,75 @@ const GitHubContributions: React.FC<GitHubContributionsProps> = ({ className }) 
     );
   };
 
-  if (loading) {
-    return (
-      <Card className={className} variant="borderless">
+  const renderContent = () => {
+    if (loading) {
+      return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
           <Spin />
           <div style={{ marginTop: '8px', color: '#666' }}>加载GitHub贡献数据...</div>
         </div>
-      </Card>
-    );
-  }
+      );
+    }
 
-  if (error) {
-    return (
-      <Card className={className} variant="borderless">
+    if (error) {
+      return (
         <div style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
           <GithubOutlined style={{ fontSize: '24px', marginBottom: '8px' }} />
           <div>{error}</div>
         </div>
-      </Card>
+      );
+    }
+
+    return (
+      <>
+        <style>
+          {`
+            .github-contributions-scroll::-webkit-scrollbar {
+              height: 6px;
+            }
+            .github-contributions-scroll::-webkit-scrollbar-track {
+              background: #f1f3f4;
+              border-radius: 3px;
+            }
+            .github-contributions-scroll::-webkit-scrollbar-thumb {
+              background: #d1d5db;
+              border-radius: 3px;
+            }
+            .github-contributions-scroll::-webkit-scrollbar-thumb:hover {
+              background: #9ca3af;
+            }
+          `}
+        </style>
+        {username && (
+          <div style={{ marginBottom: '16px' }}>
+            <Text type="secondary" style={{ fontSize: '13px' }}>
+              @{username} 的贡献活动
+            </Text>
+          </div>
+        )}
+        
+        {renderContributionGrid()}
+      </>
     );
-  }
+  };
 
   return (
-    <Card 
+    <Collapse
       className={className}
-      title={<span className="sidebar-card-title">GitHub 贡献</span>}
-      variant="borderless"
-    >
-      <style>
-        {`
-          .github-contributions-scroll::-webkit-scrollbar {
-            height: 6px;
-          }
-          .github-contributions-scroll::-webkit-scrollbar-track {
-            background: #f1f3f4;
-            border-radius: 3px;
-          }
-          .github-contributions-scroll::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 3px;
-          }
-          .github-contributions-scroll::-webkit-scrollbar-thumb:hover {
-            background: #9ca3af;
-          }
-        `}
-      </style>
-      {username && (
-        <div style={{ marginBottom: '16px' }}>
-          <Text type="secondary" style={{ fontSize: '13px' }}>
-            @{username} 的贡献活动
-          </Text>
-        </div>
-      )}
-      
-      {renderContributionGrid()}
-    </Card>
+      onChange={handleCollapseChange}
+      items={[
+        {
+          key: 'github-contributions',
+          label: (
+            <span style={{ fontWeight: 500 }}>
+              <GithubOutlined style={{ marginRight: 8 }} />
+              GitHub 贡献
+            </span>
+          ),
+          children: renderContent()
+        }
+      ]}
+    />
   );
 };
 

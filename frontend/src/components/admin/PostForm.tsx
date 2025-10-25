@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Select, Button, Card, Row, Col, message, Space } from 'antd';
-import { SaveOutlined, EyeOutlined, RobotOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Select, Button, Card, Row, Col, Space, App } from 'antd';
+import { SaveOutlined, EyeOutlined, RobotOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
-import { createPost, updatePost, fetchPostById, clearError } from '@/store/slices/postsSlice';
+import { createPost, updatePost, fetchAdminPostById } from '@/store/slices/postsSlice';
 import { fetchAllCategories } from '@/store/slices/categoriesSlice';
 import { fetchAllTags } from '@/store/slices/tagsSlice';
 import { PostCreateRequest, PostUpdateRequest, PostStatus, Visibility, ContentType } from '@/types';
@@ -22,6 +22,7 @@ const PostForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
+  const { message } = App.useApp();
   const isEdit = Boolean(id);
   
   const { currentPost, loading } = useSelector((state: RootState) => state.posts);
@@ -32,23 +33,14 @@ const PostForm: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [aiDialogVisible, setAiDialogVisible] = useState(false);
   const [aiService] = useState(() => new AIService());
-  const [password, setPassword] = useState('');
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
     dispatch(fetchAllTags());
     
-    const load = async () => {
-      if (isEdit && id) {
-        const action = await dispatch(fetchPostById(Number(id)));
-        if (fetchPostById.rejected.match(action)) {
-          setShowPasswordForm(true);
-          dispatch(clearError());
-        }
-      }
-    };
-    load();
+    if (isEdit && id) {
+      dispatch(fetchAdminPostById(Number(id)));
+    }
   }, [dispatch, isEdit, id]);
 
   useEffect(() => {
@@ -133,47 +125,8 @@ const PostForm: React.FC = () => {
     });
   };
 
-  const handlePasswordSubmit = async () => {
-    if (!id) return;
-    if (!password.trim()) {
-      message.warning('请输入密码');
-      return;
-    }
-    try {
-      await apiService.verifyPostPasswordById(Number(id), password);
-      message.success('密码验证成功');
-      setShowPasswordForm(false);
-      setPassword('');
-      await dispatch(fetchPostById(Number(id)));
-    } catch (e: any) {
-      if (e?.response?.status === 401) {
-        message.error('密码错误，请重试');
-      } else {
-        message.error('验证失败');
-      }
-    }
-  };
-
-  if (loading && !showPasswordForm) {
+  if (loading) {
     return <Loading />;
-  }
-
-  if (showPasswordForm) {
-    return (
-      <Card style={{ textAlign: 'center', margin: '20px 0' }}>
-        <LockOutlined style={{ fontSize: '48px', color: '#1890ff', marginBottom: '16px' }} />
-        <h3>该文章为密码保护，请输入访问密码</h3>
-        <Space.Compact style={{ width: 360, marginTop: 12 }}>
-          <Input.Password
-            placeholder="请输入密码"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onPressEnter={handlePasswordSubmit}
-          />
-          <Button type="primary" onClick={handlePasswordSubmit}>确认</Button>
-        </Space.Compact>
-      </Card>
-    );
   }
 
   return (
@@ -299,25 +252,34 @@ const PostForm: React.FC = () => {
                   <Select>
                     <Option value={PostStatus.DRAFT}>草稿</Option>
                     <Option value={PostStatus.PUBLISHED}>已发布</Option>
-                    <Option value={PostStatus.ARCHIVED}>已归档</Option>
                   </Select>
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item
-                  name="visibility"
-                  label="可见性"
-                  rules={[{ required: true, message: '请选择可见性' }]}
-                >
-                  <Select onChange={(v) => {
-                    if (v !== Visibility.PASSWORD) {
-                      form.setFieldsValue({ password: undefined });
+                <Form.Item noStyle shouldUpdate={(prev, curr) => prev.status !== curr.status}>
+                  {() => {
+                    const status = form.getFieldValue('status');
+                    // 只有已发布状态才显示可见性选项
+                    if (status === PostStatus.PUBLISHED) {
+                      return (
+                        <Form.Item
+                          name="visibility"
+                          label="可见性"
+                          rules={[{ required: true, message: '请选择可见性' }]}
+                        >
+                          <Select onChange={(v) => {
+                            if (v !== Visibility.PASSWORD) {
+                              form.setFieldsValue({ password: undefined });
+                            }
+                          }}>
+                            <Option value={Visibility.PUBLIC}>公开</Option>
+                            <Option value={Visibility.PASSWORD}>密码保护</Option>
+                          </Select>
+                        </Form.Item>
+                      );
                     }
-                  }}>
-                    <Option value={Visibility.PUBLIC}>公开</Option>
-                    <Option value={Visibility.PRIVATE}>私有</Option>
-                    <Option value={Visibility.PASSWORD}>密码保护</Option>
-                  </Select>
+                    return <div style={{ height: 32 }}></div>; // 占位
+                  }}
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -407,7 +369,7 @@ const PostForm: React.FC = () => {
       <AIDialog
         visible={aiDialogVisible}
         onClose={() => setAiDialogVisible(false)}
-        content={form.getFieldsValue().content || ''}
+        content={form?.getFieldValue('content') || ''}
         onResult={handleAIResult}
         aiService={aiService}
       />

@@ -42,11 +42,11 @@ public class PostCreateRequest {
     private ContentType contentType = ContentType.MARKDOWN;
 
     @Builder.Default
-    @Schema(description = "文章状态", example = "DRAFT", allowableValues = {"DRAFT", "PUBLISHED", "ARCHIVED"})
+    @Schema(description = "文章状态", example = "DRAFT", allowableValues = {"DRAFT", "PUBLISHED"})
     private PostStatus status = PostStatus.DRAFT;
 
     @Builder.Default
-    @Schema(description = "文章可见性", example = "PUBLIC", allowableValues = {"PUBLIC", "PRIVATE", "PASSWORD"})
+    @Schema(description = "文章可见性（仅发布状态有效）", example = "PUBLIC", allowableValues = {"PUBLIC", "PASSWORD"})
     private Visibility visibility = Visibility.PUBLIC;
 
     @Size(max = 50, message = "密码长度不能超过50个字符")

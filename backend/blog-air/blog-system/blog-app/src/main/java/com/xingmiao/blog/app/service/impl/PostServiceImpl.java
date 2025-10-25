@@ -22,7 +22,6 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -154,13 +153,15 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("文章不存在，ID:" + id));
         // 记录受影响标签
         Set<Tag> affected = post.getTags() == null ? new HashSet<>() : new HashSet<>(post.getTags());
-        // 软删除
-        post.setDeletedAt(LocalDateTime.now());
-        postRepository.save(post);
-        // 刷新计数
-        refreshTagPostCounts(affected);
-
+        
+        // 清理文章相关图片
         cleanupPostImages(post);
+        
+        // 硬删除（物理删除）
+        postRepository.delete(post);
+        
+        // 刷新标签计数
+        refreshTagPostCounts(affected);
     }
 
     private void cleanupPostImages(Post post) {
@@ -288,7 +289,7 @@ public class PostServiceImpl implements PostService {
     // ========== 用户端专用方法实现 ==========
     
     /**
-     * 获取用户端可见的文章类型（公开和密码保护，排除私有）
+     * 获取用户端可见的文章可见性类型（公开和密码保护）
      */
     private java.util.List<com.xingmiao.blog.common.domain.enums.Visibility> getUserVisibleVisibilities() {
         return java.util.Arrays.asList(

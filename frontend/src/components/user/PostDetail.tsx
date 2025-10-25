@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Card, Typography, Tag, Space, Button, Input, message, FloatButton } from 'antd';
-import { EyeOutlined, HeartOutlined, MessageOutlined, CalendarOutlined, LockOutlined, LeftOutlined, InfoCircleOutlined, CloseOutlined } from '@ant-design/icons';
+import { EyeOutlined, HeartOutlined, MessageOutlined, CalendarOutlined, LockOutlined, LeftOutlined, InfoCircleOutlined, CloseOutlined, CopyOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
@@ -33,6 +33,8 @@ const PostDetail: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.getAttribute('data-theme') === 'dark'
   );
+  const [collapsedCodeBlocks, setCollapsedCodeBlocks] = useState<Set<number>>(new Set());
+  const codeBlockCounterRef = useRef(0);
 
   const fetchedRef = useRef(false);
 
@@ -62,9 +64,13 @@ const PostDetail: React.FC = () => {
       if (slug) {
         const action = await dispatch(fetchPostBySlug(slug));
         if (fetchPostBySlug.rejected.match(action)) {
-          // 受保护文章：后端返回401
-          setShowPasswordForm(true);
-          dispatch(clearError());
+          // 检查错误状态码，只有401才显示密码输入框
+          const payload = action.payload as { status?: number; message?: string };
+          if (payload?.status === 401) {
+            setShowPasswordForm(true);
+            dispatch(clearError());
+          }
+          // 其他错误（404等）会显示错误页面
         }
       }
       dispatch(fetchAllCategories());
@@ -81,6 +87,9 @@ const PostDetail: React.FC = () => {
     if (currentPost) {
       setLikeCount(currentPost.likeCount);
       checkLikeStatus();
+      // 重置代码块计数器和折叠状态
+      codeBlockCounterRef.current = 0;
+      setCollapsedCodeBlocks(new Set());
     }
   }, [currentPost]);
 
@@ -140,7 +149,6 @@ const PostDetail: React.FC = () => {
     const statusMap = {
       [PostStatus.DRAFT]: { color: 'default', text: '草稿' },
       [PostStatus.PUBLISHED]: { color: 'success', text: '已发布' },
-      [PostStatus.ARCHIVED]: { color: 'warning', text: '已归档' },
     };
     const config = statusMap[status];
     return <Tag color={config.color}>{config.text}</Tag>;
@@ -149,11 +157,33 @@ const PostDetail: React.FC = () => {
   const getVisibilityTag = (visibility: Visibility) => {
     const visibilityMap = {
       [Visibility.PUBLIC]: { color: 'green', text: '公开' },
-      [Visibility.PRIVATE]: { color: 'red', text: '私有' },
       [Visibility.PASSWORD]: { color: 'orange', text: '密码保护' },
     };
     const config = visibilityMap[visibility];
     return <Tag color={config.color}>{config.text}</Tag>;
+  };
+
+  // 复制代码到剪贴板
+  const handleCopyCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      message.success('代码已复制到剪贴板');
+    } catch (error) {
+      message.error('复制失败');
+    }
+  };
+
+  // 切换代码块折叠状态
+  const toggleCodeBlock = (index: number) => {
+    setCollapsedCodeBlocks(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
   };
 
   const renderContent = () => {
@@ -176,18 +206,6 @@ const PostDetail: React.FC = () => {
               确认
             </Button>
           </Space.Compact>
-        </Card>
-      );
-    }
-
-    if (currentPost.visibility === Visibility.PRIVATE) {
-      return (
-        <Card style={{ textAlign: 'center', margin: '20px 0' }}>
-          <Title level={3}>此文章为私有文章</Title>
-          <Paragraph>您没有权限访问此文章。</Paragraph>
-          <Button type="primary" onClick={() => navigate('/')}>
-            返回首页
-          </Button>
         </Card>
       );
     }
@@ -250,7 +268,7 @@ const PostDetail: React.FC = () => {
         </div>
 
         {currentPost.excerpt && (
-          <Card style={{ marginBottom: '24px', background: '#f8f9fa' }}>
+          <Card className="excerpt-card" style={{ marginBottom: '24px' }}>
             <Paragraph style={{ fontSize: '16px', fontStyle: 'italic', margin: 0 }}>
               {currentPost.excerpt}
             </Paragraph>
@@ -259,44 +277,76 @@ const PostDetail: React.FC = () => {
 
         <div style={{ lineHeight: '1.8', fontSize: '16px' }}>
           {currentPost.contentType === 'MARKDOWN' ? (
-            <ReactMarkdown
-              components={{
-                code({ node, inline, className, children, ...props }: any) {
-                  const match = /language-(\w+)/.exec(className || '');
-                  return !inline && match ? (
-                    <SyntaxHighlighter
-                      style={isDarkMode ? atomDark : oneLight}
-                      language={match[1]}
-                      PreTag="div"
-                      showLineNumbers={true}
-                      wrapLines={true}
-                      customStyle={{
-                        borderRadius: '8px',
-                        fontSize: '13.44px',
-                        padding: '20px',
-                        margin: '24px 0',
-                        border: isDarkMode ? '1px solid #444' : '1px solid #e1e4e8',
-                      }}
-                      codeTagProps={{
-                        style: {
-                          fontSize: '13.44px',
-                          fontFamily: "'Consolas', 'Monaco', 'Courier New', monospace",
-                        }
-                      }}
-                      {...(props as any)}
-                    >
-                      {String(children).replace(/\n$/, '')}
-                    </SyntaxHighlighter>
-                  ) : (
-                    <code className="inline-code" {...(props as any)}>
-                      {children}
-                    </code>
-                  );
-                },
-              }}
-            >
-              {currentPost.content}
-            </ReactMarkdown>
+            (() => {
+              // 每次渲染时重置代码块计数器
+              codeBlockCounterRef.current = 0;
+              return (
+                <ReactMarkdown
+                  components={{
+                    code({ node, inline, className, children, ...props }: any) {
+                      const match = /language-(\w+)/.exec(className || '');
+                      if (!inline && match) {
+                        const codeString = String(children).replace(/\n$/, '');
+                        const codeBlockIndex = codeBlockCounterRef.current++;
+                        const isCollapsed = collapsedCodeBlocks.has(codeBlockIndex);
+                        
+                        return (
+                          <div className="code-block-wrapper">
+                            <div className="code-block-header">
+                              <div className="code-block-dots" onClick={() => toggleCodeBlock(codeBlockIndex)}>
+                                <span className="dot dot-red"></span>
+                                <span className="dot dot-yellow"></span>
+                                <span className="dot dot-green"></span>
+                              </div>
+                              <span className="code-block-language">{match[1]}</span>
+                              <Button
+                                type="text"
+                                size="small"
+                                icon={<CopyOutlined />}
+                                className="code-block-copy-btn"
+                                onClick={() => handleCopyCode(codeString)}
+                              />
+                            </div>
+                            {!isCollapsed && (
+                              <SyntaxHighlighter
+                                style={isDarkMode ? atomDark : oneLight}
+                                language={match[1]}
+                                PreTag="div"
+                                showLineNumbers={true}
+                                wrapLines={true}
+                                customStyle={{
+                                  borderRadius: '0 0 8px 8px',
+                                  fontSize: '13.44px',
+                                  padding: '20px',
+                                  margin: '0',
+                                  border: 'none',
+                                }}
+                                codeTagProps={{
+                                  style: {
+                                    fontSize: '13.44px',
+                                    fontFamily: "'Consolas', 'Monaco', 'Courier New', monospace",
+                                  }
+                                }}
+                                {...(props as any)}
+                              >
+                                {codeString}
+                              </SyntaxHighlighter>
+                            )}
+                          </div>
+                        );
+                      }
+                      return (
+                        <code className="inline-code" {...(props as any)}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {currentPost.content}
+                </ReactMarkdown>
+              );
+            })()
           ) : (
             <div dangerouslySetInnerHTML={{ __html: currentPost.content }} />
           )}

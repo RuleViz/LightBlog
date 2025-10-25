@@ -1,7 +1,7 @@
 import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import { ConfigProvider, theme, Spin } from 'antd';
+import { ConfigProvider, theme, Spin, App as AntApp } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import { store, RootState } from '@/store';
 import { setTheme } from '@/store/slices/uiSlice';
@@ -64,38 +64,40 @@ const AppContent: React.FC = () => {
 
   return (
     <ConfigProvider locale={zhCN} theme={antdTheme}>
-      <Router
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* 用户端路由 */}
-            <Route path="/" element={<UserLayout />}>
-              <Route index element={<Home />} />
-              <Route path="categories" element={<AllCategoriesPage />} />
-              <Route path="posts/:slug" element={<PostDetail />} />
-              <Route path="categories/:slug" element={<CategoryPage />} />
-              <Route path="tags/:slug" element={<TagPage />} />
-              <Route path="search" element={<SearchPage />} />
-            </Route>
+      <AntApp>
+        <Router
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* 用户端路由 */}
+              <Route path="/" element={<UserLayout />}>
+                <Route index element={<Home />} />
+                <Route path="categories" element={<AllCategoriesPage />} />
+                <Route path="posts/:slug" element={<PostDetail />} />
+                <Route path="categories/:slug" element={<CategoryPage />} />
+                <Route path="tags/:slug" element={<TagPage />} />
+                <Route path="search" element={<SearchPage />} />
+              </Route>
 
-            {/* 管理端路由 */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="posts" element={<PostList />} />
-              <Route path="posts/new" element={<PostForm />} />
-              <Route path="posts/:id" element={<PostDetail />} />
-              <Route path="posts/:id/edit" element={<PostForm />} />
-              <Route path="categories" element={<CategoryList />} />
-              <Route path="categories/:id" element={<CategoryList />} />
-              <Route path="tags" element={<TagList />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </Router>
+              {/* 管理端路由 */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="posts" element={<PostList />} />
+                <Route path="posts/new" element={<PostForm />} />
+                <Route path="posts/:id" element={<PostDetail />} />
+                <Route path="posts/:id/edit" element={<PostForm />} />
+                <Route path="categories" element={<CategoryList />} />
+                <Route path="categories/:id" element={<CategoryList />} />
+                <Route path="tags" element={<TagList />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </Router>
+      </AntApp>
     </ConfigProvider>
   );
 };
