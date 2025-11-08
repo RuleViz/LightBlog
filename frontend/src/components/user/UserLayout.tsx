@@ -57,7 +57,10 @@ const UserLayout: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh', background: 'var(--background-color)', overflow: 'visible' }}>
-      <Header className="modern-header" style={{ overflow: 'visible' }}>
+      <Header
+        className="modern-header"
+        style={{ overflow: 'visible', background: 'transparent', border: 'none', boxShadow: 'none' }}
+      >
         <div className="header-content">
           <div className="header-left">
             <div className="logo-simple" onClick={() => navigate('/')}>
@@ -98,7 +101,7 @@ const UserLayout: React.FC = () => {
         </div>
       </Header>
 
-      <Content style={{ marginTop: '72px', padding: '0', minHeight: 'calc(100vh - 72px - 200px)' }}>
+      <Content style={{ marginTop: '100px', padding: '0', minHeight: 'calc(100vh - 100px - 200px)' }}>
         <Outlet />
       </Content>
 
@@ -122,7 +125,7 @@ const UserLayout: React.FC = () => {
             <div className="footer-section">
               <h4 className="footer-subtitle">关注我</h4>
               <ul className="footer-links">
-                <li><a href="https://github.com/mimsq" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href="https://github.com/ruleviz" target="_blank" rel="noopener noreferrer">GitHub</a></li>
                 <li><a href="mailto:zalaohuang66@163.com">邮箱</a></li>
               </ul>
             </div>

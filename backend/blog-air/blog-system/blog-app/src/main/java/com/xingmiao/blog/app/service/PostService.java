@@ -35,6 +35,16 @@ public interface PostService {
      * 浏览量 +1（同一请求仅加一次，幂等由调用方保证）
      */
     void incrementViewCount(Long id);
+
+    /**
+     * 置顶文章
+     */
+    PostDto pin(Long id);
+
+    /**
+     * 取消置顶
+     */
+    PostDto unpin(Long id);
 }
 
 

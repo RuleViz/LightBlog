@@ -26,6 +26,7 @@ public class PostUpdateRequest {
     private Long categoryId;
     private String coverImageUrl;
     private List<Long> tagIds;
+    private Boolean pinned;
 }
 
 

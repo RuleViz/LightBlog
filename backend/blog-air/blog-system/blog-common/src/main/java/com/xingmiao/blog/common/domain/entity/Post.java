@@ -24,7 +24,8 @@ import java.util.Set;
                @Index(name = "idx_published_at", columnList = "published_at"),
                @Index(name = "idx_created_at", columnList = "created_at"),
                @Index(name = "idx_deleted_at", columnList = "deleted_at"),
-               @Index(name = "idx_status_visibility_deleted", columnList = "status, visibility, deleted_at")
+               @Index(name = "idx_status_visibility_deleted", columnList = "status, visibility, deleted_at"),
+               @Index(name = "idx_pinned", columnList = "pinned, pinned_at")
        },
        uniqueConstraints = {
                @UniqueConstraint(name = "uk_posts_slug", columnNames = {"slug"})
@@ -80,6 +81,12 @@ public class Post {
     @Column(name = "comment_count")
     private Long commentCount;
 
+    @Column(name = "pinned", nullable = false)
+    private Boolean pinned;
+
+    @Column(name = "pinned_at")
+    private LocalDateTime pinnedAt;
+
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
 
@@ -107,6 +114,9 @@ public class Post {
             createdAt = now;
         }
         updatedAt = now;
+        if (pinned == null) {
+            pinned = Boolean.FALSE;
+        }
         if (viewCount == null) {
             viewCount = 0L;
         }
@@ -115,6 +125,12 @@ public class Post {
         }
         if (commentCount == null) {
             commentCount = 0L;
+        }
+        if (Boolean.TRUE.equals(pinned) && pinnedAt == null) {
+            pinnedAt = now;
+        }
+        if (!Boolean.TRUE.equals(pinned)) {
+            pinnedAt = null;
         }
         if (status == PostStatus.PUBLISHED && publishedAt == null) {
             publishedAt = now;
@@ -126,6 +142,12 @@ public class Post {
         updatedAt = LocalDateTime.now();
         if (status == PostStatus.PUBLISHED && publishedAt == null) {
             publishedAt = LocalDateTime.now();
+        }
+        if (Boolean.TRUE.equals(pinned) && pinnedAt == null) {
+            pinnedAt = LocalDateTime.now();
+        }
+        if (!Boolean.TRUE.equals(pinned)) {
+            pinnedAt = null;
         }
     }
 }

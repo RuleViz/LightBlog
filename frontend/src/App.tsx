@@ -46,12 +46,46 @@ const AppContent: React.FC = () => {
   const { theme: currentTheme } = useSelector((state: RootState) => state.ui);
 
   useEffect(() => {
-    // 从本地存储恢复主题设置
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (savedTheme && savedTheme !== currentTheme) {
+
+    if (savedTheme === 'light' || savedTheme === 'dark') {
       dispatch(setTheme(savedTheme));
+      return;
     }
-  }, [dispatch, currentTheme]);
+
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const applySystemPreference = (matches: boolean) => {
+      const manualTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      if (manualTheme === 'light' || manualTheme === 'dark') {
+        return;
+      }
+      dispatch(setTheme(matches ? 'dark' : 'light'));
+    };
+
+    applySystemPreference(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      applySystemPreference(event.matches);
+    };
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => {
+        mediaQuery.removeEventListener('change', handleChange);
+      };
+    }
+
+    // 兼容较旧的浏览器
+    mediaQuery.addListener(handleChange);
+    return () => {
+      mediaQuery.removeListener(handleChange);
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     // 更新 HTML 根元素的 data-theme 属性

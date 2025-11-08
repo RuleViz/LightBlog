@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Select, Button, Card, Row, Col, Space, App } from 'antd';
+import { Form, Input, Select, Button, Card, Row, Col, Space, App, Switch } from 'antd';
 import { SaveOutlined, EyeOutlined, RobotOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,6 +56,7 @@ const PostForm: React.FC = () => {
         categoryId: currentPost.categoryId,
         coverImageUrl: currentPost.coverImageUrl,
         tagIds: currentPost.tags?.map(t => t.id) || [],
+        pinned: currentPost.pinned,
       });
     }
   }, [isEdit, currentPost, form]);
@@ -165,6 +166,7 @@ const PostForm: React.FC = () => {
               status: PostStatus.DRAFT,
               visibility: Visibility.PUBLIC,
               tagIds: [],
+              pinned: false,
             }}
           >
             {/* 封面图片上传 - 置于顶部 */}
@@ -255,12 +257,53 @@ const PostForm: React.FC = () => {
                 </Form.Item>
               </Col>
               <Col span={6}>
+                <Form.Item
+                  name="categoryId"
+                  label="分类"
+                >
+                  <Select placeholder="请选择分类" allowClear>
+                    {allCategories.map(category => (
+                      <Option key={category.id} value={category.id}>
+                        {category.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
                 <Form.Item noStyle shouldUpdate={(prev, curr) => prev.status !== curr.status}>
                   {() => {
                     const status = form.getFieldValue('status');
-                    // 只有已发布状态才显示可见性选项
-                    if (status === PostStatus.PUBLISHED) {
-                      return (
+                    const isPublished = status === PostStatus.PUBLISHED;
+                    const currentPinned = form.getFieldValue('pinned');
+                    if (!isPublished && currentPinned) {
+                      form.setFieldsValue({ pinned: false });
+                    }
+                    return (
+                      <Form.Item
+                        name="pinned"
+                        label="置顶"
+                        valuePropName="checked"
+                      >
+                        <Switch
+                          disabled={!isPublished}
+                          checkedChildren="是"
+                          unCheckedChildren="否"
+                        />
+                      </Form.Item>
+                    );
+                  }}
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Form.Item noStyle shouldUpdate={(prev, curr) => prev.status !== curr.status}>
+              {() => {
+                const status = form.getFieldValue('status');
+                if (status === PostStatus.PUBLISHED) {
+                  return (
+                    <Row gutter={16}>
+                      <Col span={6}>
                         <Form.Item
                           name="visibility"
                           label="可见性"
@@ -275,27 +318,13 @@ const PostForm: React.FC = () => {
                             <Option value={Visibility.PASSWORD}>密码保护</Option>
                           </Select>
                         </Form.Item>
-                      );
-                    }
-                    return <div style={{ height: 32 }}></div>; // 占位
-                  }}
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
-                  name="categoryId"
-                  label="分类"
-                >
-                  <Select placeholder="请选择分类" allowClear>
-                    {allCategories.map(category => (
-                      <Option key={category.id} value={category.id}>
-                        {category.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
+                      </Col>
+                    </Row>
+                  );
+                }
+                return null;
+              }}
+            </Form.Item>
 
             <Row gutter={16}>
               <Col span={24}>

@@ -101,6 +101,16 @@ class ApiService {
     return response.data;
   }
 
+  async pinPost(id: number): Promise<Post> {
+    const response = await this.api.post(`/posts/admin/${id}/pin`);
+    return response.data;
+  }
+
+  async unpinPost(id: number): Promise<Post> {
+    const response = await this.api.delete(`/posts/admin/${id}/pin`);
+    return response.data;
+  }
+
   async verifyPostPasswordById(postId: number, password: string): Promise<void> {
     await this.api.post(`/posts/${postId}/access`, password, {
       headers: { 'Content-Type': 'text/plain;charset=UTF-8' },

@@ -64,6 +64,20 @@
   gap: 12px;
 }
 
+.post-pinned-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  border-radius: 999px;
+  margin: 0;
+  padding: 2px 10px;
+}
+
+.post-pinned-tag .anticon {
+  font-size: 14px;
+}
+
 .post-title {
   margin: 0 !important;
   font-size: 22px !important;
@@ -99,6 +113,26 @@
 
 .post-meta .ant-space-item {
   font-size: 14px;
+}
+
+/* 日期样式 - 加粗显眼 */
+.post-date {
+  font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 
+               'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 
+               'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+.post-date .anticon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.post-date .ant-typography {
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  color: var(--text-color) !important;
+  letter-spacing: 0.3px;
 }
 
 .post-tags {
@@ -148,6 +182,14 @@
 
   .post-meta .ant-space {
     gap: 12px !important;
+  }
+
+  .post-date .anticon {
+    font-size: 15px;
+  }
+
+  .post-date .ant-typography {
+    font-size: 14px !important;
   }
 }
 

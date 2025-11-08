@@ -62,6 +62,10 @@ public class PostCreateRequest {
 
     @Schema(description = "标签ID列表", example = "[1,2,3]")
     private List<Long> tagIds;
+
+    @Builder.Default
+    @Schema(description = "是否置顶", example = "false")
+    private Boolean pinned = Boolean.FALSE;
 }
 
 

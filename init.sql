@@ -167,6 +167,8 @@ CREATE TABLE `posts` (
   `view_count` bigint DEFAULT '0',
   `like_count` bigint DEFAULT '0',
   `comment_count` bigint DEFAULT '0',
+  `pinned` tinyint(1) NOT NULL DEFAULT '0',
+  `pinned_at` datetime DEFAULT NULL,
   `published_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
@@ -179,20 +181,21 @@ CREATE TABLE `posts` (
   KEY `idx_published_at` (`published_at`),
   KEY `idx_created_at` (`created_at`),
   KEY `idx_deleted_at` (`deleted_at`),
+  KEY `idx_pinned` (`pinned`,`pinned_at`),
   KEY `idx_status_visibility_deleted` (`status`,`visibility`,`deleted_at`),
   CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `posts` */
 
-insert  into `posts`(`id`,`title`,`slug`,`excerpt`,`content`,`content_type`,`status`,`visibility`,`password`,`category_id`,`cover_image_url`,`meta_title`,`meta_description`,`meta_keywords`,`view_count`,`like_count`,`comment_count`,`published_at`,`deleted_at`,`created_at`,`updated_at`) values 
-(2,'测试1','test_1','测试2','# 1.昨天下午我去超市买了苹果，打算晚上吃。但妈妈说家里还有橘子，让我先别买，结果我结账后把苹果忘在收银台的袋子里了。\n\n##2.我从图书馆借的那本小说特别好看，讲的是一个女孩在森林里遇见一只会说话的兔子，后来他们一起寻找宝藏的故事。我昨天才把它看完。\n\n# 3.早上起床后我先刷了牙，然后煮鸡蛋，发现牛奶没了就下楼去买。等我回来时，面包已经凉了，我也不想吃了。\n\n## 4.学校组织的春游原定周六进行，但因下雨改到了下周日。同学们都很期待，打算带零食和相机去公园玩。\n\n# 5.姐姐教我用彩纸折小船：要先把纸对折再展开压出痕迹，然后把两边折成三角形。可我总是记不住这些步骤。','MARKDOWN','PUBLISHED','PUBLIC',NULL,1,NULL,NULL,NULL,NULL,65,1,0,'2025-09-15 11:49:26',NULL,'2025-09-15 11:49:26','2025-09-21 18:53:09'),
-(3,'测试2','test_post_2',NULL,'没有内容只是用来测试111','MARKDOWN','PUBLISHED','PUBLIC','111',1,'',NULL,NULL,NULL,11,0,0,'2025-09-15 16:11:54',NULL,'2025-09-15 12:00:39','2025-09-15 16:13:30'),
-(7,'测试4','test_post_4',NULL,'没有内容只是用来测试111','MARKDOWN','PUBLISHED','PASSWORD','123',1,'',NULL,NULL,NULL,13,0,0,'2025-09-15 15:25:12',NULL,'2025-09-15 15:25:12','2025-09-22 16:43:22'),
-(8,'测试3','post_test3',NULL,'测试3\n# 测试3\n### 测试3\n## 测试3','MARKDOWN','PUBLISHED','PASSWORD','123',2,NULL,NULL,NULL,NULL,8,0,0,'2025-09-15 16:01:43',NULL,'2025-09-15 16:01:43','2025-09-22 16:43:01'),
-(9,'11','11',NULL,'11','MARKDOWN','DRAFT','PUBLIC',NULL,NULL,NULL,NULL,NULL,NULL,3,0,0,NULL,'2025-09-21 16:55:44','2025-09-15 16:57:43','2025-09-21 16:55:44'),
-(10,'dawdaw','test_security',NULL,'dasda','MARKDOWN','DRAFT','PASSWORD','123',NULL,NULL,NULL,NULL,NULL,18,1,0,'2025-09-21 19:47:42',NULL,'2025-09-21 19:47:42','2025-09-24 15:52:43'),
-(11,'1111','11111',NULL,'1111','MARKDOWN','ARCHIVED','PUBLIC',NULL,NULL,NULL,NULL,NULL,NULL,2,0,0,NULL,NULL,'2025-09-24 16:03:23','2025-09-24 16:03:46');
+insert  into `posts`(`id`,`title`,`slug`,`excerpt`,`content`,`content_type`,`status`,`visibility`,`password`,`category_id`,`cover_image_url`,`meta_title`,`meta_description`,`meta_keywords`,`view_count`,`like_count`,`comment_count`,`pinned`,`pinned_at`,`published_at`,`deleted_at`,`created_at`,`updated_at`) values 
+(2,'测试1','test_1','测试2','# 1.昨天下午我去超市买了苹果，打算晚上吃。但妈妈说家里还有橘子，让我先别买，结果我结账后把苹果忘在收银台的袋子里了。\n\n##2.我从图书馆借的那本小说特别好看，讲的是一个女孩在森林里遇见一只会说话的兔子，后来他们一起寻找宝藏的故事。我昨天才把它看完。\n\n# 3.早上起床后我先刷了牙，然后煮鸡蛋，发现牛奶没了就下楼去买。等我回来时，面包已经凉了，我也不想吃了。\n\n## 4.学校组织的春游原定周六进行，但因下雨改到了下周日。同学们都很期待，打算带零食和相机去公园玩。\n\n# 5.姐姐教我用彩纸折小船：要先把纸对折再展开压出痕迹，然后把两边折成三角形。可我总是记不住这些步骤。','MARKDOWN','PUBLISHED','PUBLIC',NULL,1,NULL,NULL,NULL,NULL,65,1,0,1,'2025-09-15 10:00:00','2025-09-15 11:49:26',NULL,'2025-09-15 11:49:26','2025-09-21 18:53:09'),
+(3,'测试2','test_post_2',NULL,'没有内容只是用来测试111','MARKDOWN','PUBLISHED','PUBLIC','111',1,'',NULL,NULL,NULL,11,0,0,0,NULL,'2025-09-15 16:11:54',NULL,'2025-09-15 12:00:39','2025-09-15 16:13:30'),
+(7,'测试4','test_post_4',NULL,'没有内容只是用来测试111','MARKDOWN','PUBLISHED','PASSWORD','123',1,'',NULL,NULL,NULL,13,0,0,0,NULL,'2025-09-15 15:25:12',NULL,'2025-09-15 15:25:12','2025-09-22 16:43:22'),
+(8,'测试3','post_test3',NULL,'测试3\n# 测试3\n### 测试3\n## 测试3','MARKDOWN','PUBLISHED','PASSWORD','123',2,NULL,NULL,NULL,NULL,8,0,0,0,NULL,'2025-09-15 16:01:43',NULL,'2025-09-15 16:01:43','2025-09-22 16:43:01'),
+(9,'11','11',NULL,'11','MARKDOWN','DRAFT','PUBLIC',NULL,NULL,NULL,NULL,NULL,NULL,3,0,0,0,NULL,NULL,'2025-09-21 16:55:44','2025-09-15 16:57:43','2025-09-21 16:55:44'),
+(10,'dawdaw','test_security',NULL,'dasda','MARKDOWN','DRAFT','PASSWORD','123',NULL,NULL,NULL,NULL,NULL,18,1,0,0,NULL,'2025-09-21 19:47:42',NULL,'2025-09-21 19:47:42','2025-09-24 15:52:43'),
+(11,'1111','11111',NULL,'1111','MARKDOWN','ARCHIVED','PUBLIC',NULL,NULL,NULL,NULL,NULL,NULL,2,0,0,0,NULL,NULL,NULL,'2025-09-24 16:03:23','2025-09-24 16:03:46');
 
 /*Table structure for table `system_configs` */
 

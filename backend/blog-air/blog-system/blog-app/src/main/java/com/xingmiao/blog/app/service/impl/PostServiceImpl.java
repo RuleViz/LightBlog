@@ -13,7 +13,9 @@ import com.xingmiao.blog.app.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -22,6 +24,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -62,6 +65,13 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() -> new RuntimeException("当前分类不存在,CategoryId:" + request.getCategoryId()));
         }
         Set<Tag> tags = resolveTags(request.getTagIds());
+        boolean pinned = Boolean.TRUE.equals(request.getPinned());
+        LocalDateTime pinnedAt = pinned ? LocalDateTime.now() : null;
+
+        if (pinned && request.getStatus() != com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED) {
+            throw new RuntimeException("仅已发布的文章可以置顶");
+        }
+
         Post post = Post.builder()
                 .title(request.getTitle())
                 .slug(request.getSlug())
@@ -73,6 +83,8 @@ public class PostServiceImpl implements PostService {
                 .password(request.getPassword())
                 .category(category)
                 .coverImageUrl(request.getCoverImageUrl())
+                .pinned(pinned)
+                .pinnedAt(pinnedAt)
                 .tags(tags)
                 .build();
         Post savedPost = postRepository.save(post);
@@ -128,6 +140,26 @@ public class PostServiceImpl implements PostService {
         }
         if (request.getCoverImageUrl() != null) {
             existingPost.setCoverImageUrl(request.getCoverImageUrl());
+        }
+        if (request.getPinned() != null) {
+            if (Boolean.TRUE.equals(request.getPinned()) &&
+                    existingPost.getStatus() != com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED) {
+                throw new RuntimeException("仅已发布的文章可以置顶");
+            }
+            if (Boolean.TRUE.equals(request.getPinned())) {
+                if (!Boolean.TRUE.equals(existingPost.getPinned()) || existingPost.getPinnedAt() == null) {
+                    existingPost.setPinned(Boolean.TRUE);
+                    existingPost.setPinnedAt(LocalDateTime.now());
+                }
+            } else {
+                existingPost.setPinned(Boolean.FALSE);
+                existingPost.setPinnedAt(null);
+            }
+        }
+        if (existingPost.getStatus() != com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED
+                && Boolean.TRUE.equals(existingPost.getPinned())) {
+            existingPost.setPinned(Boolean.FALSE);
+            existingPost.setPinnedAt(null);
         }
         if (request.getTagIds() != null) {
             Set<Tag> newTags = resolveTags(request.getTagIds());
@@ -257,32 +289,36 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Page<PostDto> list(Pageable pageable) {
-        return postRepository.findByDeletedAtIsNull(pageable)
+        Pageable effectivePageable = applyPinnedSort(pageable);
+        return postRepository.findByDeletedAtIsNull(effectivePageable)
                 .map(this::convertToDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<PostDto> listByCategory(Long categoryId, Pageable pageable) {
-        return postRepository.findByCategory_IdAndDeletedAtIsNull(categoryId, pageable)
+        Pageable effectivePageable = applyPinnedSort(pageable);
+        return postRepository.findByCategory_IdAndDeletedAtIsNull(categoryId, effectivePageable)
                 .map(this::convertToDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<PostDto> listByTag(Long tagId, Pageable pageable) {
-        return postRepository.findByTags_IdAndDeletedAtIsNull(tagId, pageable)
+        Pageable effectivePageable = applyPinnedSort(pageable);
+        return postRepository.findByTags_IdAndDeletedAtIsNull(tagId, effectivePageable)
                 .map(this::convertToDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<PostDto> searchByKeyword(String keyword, Pageable pageable) {
+        Pageable effectivePageable = applyPinnedSort(pageable);
         if (keyword == null || keyword.trim().isEmpty()) {
-            return postRepository.findByDeletedAtIsNull(pageable)
+            return postRepository.findByDeletedAtIsNull(effectivePageable)
                     .map(this::convertToDto);
         }
-        return postRepository.findByKeywordAndDeletedAtIsNull(keyword.trim(), pageable)
+        return postRepository.findByKeywordAndDeletedAtIsNull(keyword.trim(), effectivePageable)
                 .map(this::convertToDto);
     }
 
@@ -301,32 +337,35 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Page<PostDto> listPublishedPosts(Pageable pageable) {
+        Pageable effectivePageable = applyPinnedSort(pageable);
         return postRepository.findByStatusAndVisibilityInAndDeletedAtIsNull(
                 com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED, 
                 getUserVisibleVisibilities(), 
-                pageable)
+                effectivePageable)
                 .map(this::convertToDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<PostDto> listPublishedPostsByCategory(Long categoryId, Pageable pageable) {
+        Pageable effectivePageable = applyPinnedSort(pageable);
         return postRepository.findByCategory_IdAndStatusAndVisibilityInAndDeletedAtIsNull(
                 categoryId,
                 com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED, 
                 getUserVisibleVisibilities(), 
-                pageable)
+                effectivePageable)
                 .map(this::convertToDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<PostDto> listPublishedPostsByTag(Long tagId, Pageable pageable) {
+        Pageable effectivePageable = applyPinnedSort(pageable);
         return postRepository.findByTags_IdAndStatusAndVisibilityInAndDeletedAtIsNull(
                 tagId,
                 com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED, 
                 getUserVisibleVisibilities(), 
-                pageable)
+                effectivePageable)
                 .map(this::convertToDto);
     }
 
@@ -336,11 +375,12 @@ public class PostServiceImpl implements PostService {
         if (keyword == null || keyword.trim().isEmpty()) {
             return listPublishedPosts(pageable);
         }
+        Pageable effectivePageable = applyPinnedSort(pageable);
         return postRepository.findByKeywordAndStatusAndVisibilityInAndDeletedAtIsNull(
                 keyword.trim(),
                 com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED, 
                 getUserVisibleVisibilities(), 
-                pageable)
+                effectivePageable)
                 .map(this::convertToDto);
     }
 
@@ -363,6 +403,37 @@ public class PostServiceImpl implements PostService {
                 com.xingmiao.blog.common.domain.enums.PostStatus.DRAFT);
     }
 
+    @Override
+    public PostDto pin(Long id) {
+        Post post = postRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new RuntimeException("文章不存在，ID:" + id));
+        if (post.getStatus() != com.xingmiao.blog.common.domain.enums.PostStatus.PUBLISHED) {
+            throw new RuntimeException("仅已发布的文章可以置顶");
+        }
+        if (Boolean.TRUE.equals(post.getPinned())) {
+            if (post.getPinnedAt() == null) {
+                post.setPinnedAt(LocalDateTime.now());
+                Post savedPost = postRepository.save(post);
+                return convertToDto(savedPost);
+            }
+            return convertToDto(post);
+        }
+        post.setPinned(Boolean.TRUE);
+        post.setPinnedAt(LocalDateTime.now());
+        Post savedPost = postRepository.save(post);
+        return convertToDto(savedPost);
+    }
+
+    @Override
+    public PostDto unpin(Long id) {
+        Post post = postRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new RuntimeException("文章不存在，ID:" + id));
+        post.setPinned(Boolean.FALSE);
+        post.setPinnedAt(null);
+        Post savedPost = postRepository.save(post);
+        return convertToDto(savedPost);
+    }
+
     private Set<Tag> resolveTags(List<Long> tagIds) {
         if (tagIds == null || tagIds.isEmpty()) {
             return new HashSet<>();
@@ -381,6 +452,25 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    private Pageable applyPinnedSort(Pageable pageable) {
+        Sort pinnedSort = Sort.by(
+                Sort.Order.desc("pinned"),
+                Sort.Order.desc("pinnedAt"),
+                Sort.Order.desc("publishedAt"),
+                Sort.Order.desc("createdAt")
+        );
+
+        if (pageable == null) {
+            return PageRequest.of(0, 20, pinnedSort);
+        }
+        if (pageable.isUnpaged()) {
+            return pageable;
+        }
+
+        Sort combinedSort = pageable.getSort().isSorted() ? pinnedSort.and(pageable.getSort()) : pinnedSort;
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), combinedSort);
+    }
+
     private PostDto convertToDto(Post post) {
         return PostDto.builder()
                 .id(post.getId())
@@ -394,6 +484,8 @@ public class PostServiceImpl implements PostService {
                 .password(post.getPassword())
                 .categoryId(post.getCategory() != null ? post.getCategory().getId() : null)
                 .coverImageUrl(post.getCoverImageUrl())
+                .pinned(Boolean.TRUE.equals(post.getPinned()))
+                .pinnedAt(post.getPinnedAt())
                 .viewCount(post.getViewCount())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())

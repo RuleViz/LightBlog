@@ -18,7 +18,7 @@ import java.util.Map;
  * 
  * <p>提供简单的管理员密码验证功能。</p>
  * 
- * @author 星喵博客系统
+ * @author 博客系统
  * @version 1.0.0
  * @since 2024-01-01
  */

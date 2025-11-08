@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor, ReactNodeViewRenderer } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Markdown } from 'tiptap-markdown';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -7,7 +7,9 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { createLowlight, common } from 'lowlight';
-import { message } from 'antd';
+import { App } from 'antd';
+import ResizableImageNodeView from '@/components/common/ResizableImageNodeView';
+import { DEFAULT_IMAGE_SIZE, encodeImageAlt } from '@/utils/imageSize';
 import './MarkdownEditor.css';
 
 // Markdown 编辑器组件的属性类型定义
@@ -26,13 +28,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   height = 420,
   className,
 }) => {
+  const { message } = App.useApp();
   // 全屏模式状态
   const [isFullscreen, setIsFullscreen] = useState(false);
   // 文件上传输入框引用
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 上传状态
   const [uploading, setUploading] = useState(false);
-
   // 创建代码高亮实例（用于代码块）
   const lowlight = useMemo(() => createLowlight(common), []);
 
@@ -42,8 +44,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       codeBlock: false, // 使用带语法高亮的代码块替代
     }),
     Placeholder.configure({ placeholder }),
-    Link.configure({ openOnClick: false, autolink: true, protocols: ['http', 'https', 'mailto'] }),
-    Image.configure({
+    Link.configure({ openOnClick: false, autolink: true }),
+    Image.extend({
+      addNodeView() {
+        return ReactNodeViewRenderer(ResizableImageNodeView);
+      },
+    }).configure({
       inline: true,
       allowBase64: false,
       HTMLAttributes: {
@@ -157,7 +163,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         const fullUrl = data.url;
         
         // 在光标位置插入图片
-        editor.chain().focus().setImage({ src: fullUrl }).run();
+        editor.chain().focus().setImage({ src: fullUrl, alt: encodeImageAlt('', DEFAULT_IMAGE_SIZE) }).run();
         message.success('图片上传成功！');
       } else {
         throw new Error('响应数据格式错误');
@@ -199,7 +205,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // 工具栏按钮样式
   const buttonStyle: React.CSSProperties = {
     padding: '6px 12px',
-    border: '1px solid #d9d9d9',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#d9d9d9',
     borderRadius: '4px',
     backgroundColor: '#fff',
     cursor: 'pointer',

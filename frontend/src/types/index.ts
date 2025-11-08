@@ -36,6 +36,8 @@ export interface Post {
   viewCount: number;
   likeCount: number;
   commentCount: number;
+  pinned: boolean;
+  pinnedAt?: string;
   publishedAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -78,6 +80,7 @@ export interface PostCreateRequest {
   categoryId?: number;
   coverImageUrl?: string;
   tagIds?: number[];
+  pinned?: boolean;
 }
 
 export interface PostUpdateRequest {
@@ -92,6 +95,7 @@ export interface PostUpdateRequest {
   categoryId?: number;
   coverImageUrl?: string;
   tagIds?: number[];
+  pinned?: boolean;
 }
 
 export interface CategoryCreateRequest {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Space, Typography, Tag } from 'antd';
-import { EyeOutlined, HeartOutlined, MessageOutlined, LockOutlined, CalendarOutlined } from '@ant-design/icons';
+import { EyeOutlined, HeartOutlined, MessageOutlined, LockOutlined, CalendarOutlined, PushpinFilled } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { Post, Visibility } from '@/types';
 import { formatDate } from '@/utils/date';
@@ -39,6 +39,12 @@ const PostListItem: React.FC<PostListItemProps> = React.memo(({ post, showExcerp
         <div className="post-main">
           {/* 标题行 */}
           <div className="post-header">
+            {post.pinned && (
+              <Tag color="gold" className="post-pinned-tag">
+                <PushpinFilled />
+                置顶
+              </Tag>
+            )}
             <Title level={3} className="post-title">
               {post.visibility === Visibility.PASSWORD && (
                 <LockOutlined className="lock-icon" />
@@ -57,7 +63,7 @@ const PostListItem: React.FC<PostListItemProps> = React.memo(({ post, showExcerp
           {/* 元数据信息 */}
           <div className="post-meta">
             <Space size="large" wrap>
-              <Space>
+              <Space className="post-date">
                 <CalendarOutlined />
                 <Text type="secondary">{formatDate(post.publishedAt || post.createdAt)}</Text>
               </Space>
@@ -105,8 +111,11 @@ const PostListItem: React.FC<PostListItemProps> = React.memo(({ post, showExcerp
   );
 }, (prevProps, nextProps) => {
   // 自定义比较函数，只在post.id相同且showExcerpt相同时跳过重渲染
-  return prevProps.post.id === nextProps.post.id && 
-         prevProps.showExcerpt === nextProps.showExcerpt;
+  return prevProps.post.id === nextProps.post.id &&
+         prevProps.showExcerpt === nextProps.showExcerpt &&
+         prevProps.post.pinned === nextProps.post.pinned &&
+         prevProps.post.pinnedAt === nextProps.post.pinnedAt &&
+         prevProps.post.updatedAt === nextProps.post.updatedAt;
 });
 
 PostListItem.displayName = 'PostListItem';

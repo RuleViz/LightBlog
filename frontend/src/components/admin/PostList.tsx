@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Space, Tag, Popconfirm, message } from 'antd';
+import { Table, Button, Space, Tag, Popconfirm, message, Switch, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
-import { fetchAdminPosts, deletePost } from '@/store/slices/postsSlice';
+import { fetchAdminPosts, deletePost, pinPost, unpinPost } from '@/store/slices/postsSlice';
 import { Post, PostStatus, Visibility } from '@/types';
 import Loading from '@/components/common/Loading';
 import SearchForm from '@/components/common/SearchForm';
@@ -52,6 +52,25 @@ const PostList: React.FC = () => {
       messageApi.success('删除成功');
     } catch (error) {
       messageApi.error('删除失败');
+    }
+  };
+
+  const handlePinToggle = async (record: Post, nextPinned: boolean) => {
+    if (record.status !== PostStatus.PUBLISHED && nextPinned) {
+      messageApi.warning('仅已发布的文章可以置顶');
+      return;
+    }
+
+    try {
+      if (nextPinned) {
+        await dispatch(pinPost(record.id)).unwrap();
+        messageApi.success('文章已置顶');
+      } else {
+        await dispatch(unpinPost(record.id)).unwrap();
+        messageApi.success('已取消置顶');
+      }
+    } catch (error) {
+      messageApi.error(nextPinned ? '置顶失败' : '取消置顶失败');
     }
   };
 
@@ -105,6 +124,34 @@ const PostList: React.FC = () => {
       dataIndex: 'visibility',
       key: 'visibility',
       render: (visibility: Visibility) => getVisibilityTag(visibility),
+    },
+    {
+      title: '置顶',
+      dataIndex: 'pinned',
+      key: 'pinned',
+      render: (_: boolean, record: Post) => {
+        const isPublished = record.status === PostStatus.PUBLISHED;
+        const switchElement = (
+          <Switch
+            size="small"
+            checked={record.pinned}
+            onChange={(checked) => handlePinToggle(record, checked)}
+            disabled={!isPublished || loading}
+            checkedChildren="是"
+            unCheckedChildren="否"
+          />
+        );
+
+        if (isPublished) {
+          return switchElement;
+        }
+
+        return (
+          <Tooltip title="仅已发布文章支持置顶">
+            <span>{switchElement}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '浏览量',

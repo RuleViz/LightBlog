@@ -15,6 +15,38 @@ interface PostsState {
   error: string | null;
 }
 
+const sortPostsByPinned = (posts: Post[]): Post[] => {
+  const parseTime = (value?: string) => (value ? new Date(value).getTime() : 0);
+  const getUpdatedTime = (post: Post) => parseTime(post.updatedAt ?? post.publishedAt ?? post.createdAt);
+  const getCreatedTime = (post: Post) => parseTime(post.publishedAt ?? post.createdAt);
+  const getPinnedPriority = (post: Post) => {
+    const pinnedTime = parseTime(post.pinnedAt);
+    const updatedTime = getUpdatedTime(post);
+    return Math.max(pinnedTime, updatedTime);
+  };
+
+  return [...posts].sort((a, b) => {
+    if (a.pinned && b.pinned) {
+      const pinnedPriorityDiff = getPinnedPriority(b) - getPinnedPriority(a);
+      if (pinnedPriorityDiff !== 0) {
+        return pinnedPriorityDiff;
+      }
+      return getUpdatedTime(b) - getUpdatedTime(a);
+    }
+
+    if (a.pinned !== b.pinned) {
+      return a.pinned ? -1 : 1;
+    }
+
+    const updatedDiff = getUpdatedTime(b) - getUpdatedTime(a);
+    if (updatedDiff !== 0) {
+      return updatedDiff;
+    }
+
+    return getCreatedTime(b) - getCreatedTime(a);
+  });
+};
+
 const initialState: PostsState = {
   posts: [],
   currentPost: null,
@@ -91,6 +123,22 @@ export const updatePost = createAsyncThunk(
   }
 );
 
+export const pinPost = createAsyncThunk(
+  'posts/pinPost',
+  async (id: number) => {
+    const response = await apiService.pinPost(id);
+    return response;
+  }
+);
+
+export const unpinPost = createAsyncThunk(
+  'posts/unpinPost',
+  async (id: number) => {
+    const response = await apiService.unpinPost(id);
+    return response;
+  }
+);
+
 export const deletePost = createAsyncThunk(
   'posts/deletePost',
   async (id: number) => {
@@ -139,7 +187,7 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload.content;
+        state.posts = sortPostsByPinned(action.payload.content);
         state.pagination = {
           totalElements: action.payload.totalElements,
           totalPages: action.payload.totalPages,
@@ -158,7 +206,7 @@ const postsSlice = createSlice({
       })
       .addCase(fetchAdminPosts.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload.content;
+        state.posts = sortPostsByPinned(action.payload.content);
         state.pagination = {
           totalElements: action.payload.totalElements,
           totalPages: action.payload.totalPages,
@@ -216,7 +264,7 @@ const postsSlice = createSlice({
       })
       .addCase(createPost.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts.unshift(action.payload);
+        state.posts = sortPostsByPinned([action.payload, ...state.posts]);
       })
       .addCase(createPost.rejected, (state, action) => {
         state.loading = false;
@@ -232,6 +280,7 @@ const postsSlice = createSlice({
         const index = state.posts.findIndex(post => post.id === action.payload.id);
         if (index !== -1) {
           state.posts[index] = action.payload;
+          state.posts = sortPostsByPinned(state.posts);
         }
         if (state.currentPost?.id === action.payload.id) {
           state.currentPost = action.payload;
@@ -264,7 +313,7 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPostsByCategory.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload.response.content;
+        state.posts = sortPostsByPinned(action.payload.response.content);
         state.pagination = {
           totalElements: action.payload.response.totalElements,
           totalPages: action.payload.response.totalPages,
@@ -283,13 +332,49 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPostsByTag.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload.response.content;
+        state.posts = sortPostsByPinned(action.payload.response.content);
         state.pagination = {
           totalElements: action.payload.response.totalElements,
           totalPages: action.payload.response.totalPages,
           size: action.payload.response.size,
           number: action.payload.response.number,
         };
+      })
+      // 置顶文章
+      .addCase(pinPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(pinPost.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = sortPostsByPinned(
+          state.posts.map(post => (post.id === action.payload.id ? action.payload : post))
+        );
+        if (state.currentPost?.id === action.payload.id) {
+          state.currentPost = action.payload;
+        }
+      })
+      .addCase(pinPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || '置顶文章失败';
+      })
+      // 取消置顶
+      .addCase(unpinPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(unpinPost.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = sortPostsByPinned(
+          state.posts.map(post => (post.id === action.payload.id ? action.payload : post))
+        );
+        if (state.currentPost?.id === action.payload.id) {
+          state.currentPost = action.payload;
+        }
+      })
+      .addCase(unpinPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || '取消置顶失败';
       })
       .addCase(fetchPostsByTag.rejected, (state, action) => {
         state.loading = false;

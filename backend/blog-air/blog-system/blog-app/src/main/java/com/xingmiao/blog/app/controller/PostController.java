@@ -281,6 +281,39 @@ public class PostController {
     }
 
     /**
+     * 管理端置顶文章
+     */
+    @PostMapping("/admin/{id}/pin")
+    @Operation(summary = "置顶文章", description = "将指定文章置顶，置顶文章会优先展示在前台列表顶部")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "置顶成功",
+                    content = @Content(schema = @Schema(implementation = PostDto.class))),
+        @ApiResponse(responseCode = "404", description = "文章不存在"),
+        @ApiResponse(responseCode = "400", description = "置顶条件不满足"),
+        @ApiResponse(responseCode = "500", description = "服务器内部错误")
+    })
+    public ResponseEntity<PostDto> pinPost(
+            @Parameter(description = "文章ID", required = true) @PathVariable("id") Long id) {
+        return ResponseEntity.ok(postService.pin(id));
+    }
+
+    /**
+     * 管理端取消置顶文章
+     */
+    @DeleteMapping("/admin/{id}/pin")
+    @Operation(summary = "取消置顶", description = "取消指定文章的置顶状态")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "取消置顶成功",
+                    content = @Content(schema = @Schema(implementation = PostDto.class))),
+        @ApiResponse(responseCode = "404", description = "文章不存在"),
+        @ApiResponse(responseCode = "500", description = "服务器内部错误")
+    })
+    public ResponseEntity<PostDto> unpinPost(
+            @Parameter(description = "文章ID", required = true) @PathVariable("id") Long id) {
+        return ResponseEntity.ok(postService.unpin(id));
+    }
+
+    /**
      * 获取文章统计信息
      */
     @GetMapping("/stats")

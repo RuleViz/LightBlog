@@ -30,6 +30,8 @@ public class PostDto {
     private Long viewCount;
     private Long likeCount;
     private Long commentCount;
+    private Boolean pinned;
+    private LocalDateTime pinnedAt;
     private LocalDateTime publishedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
