@@ -53,6 +53,7 @@ const PostDetail: React.FC = () => {
   const draggingRef = useRef(false);
   const lastPointerPositionRef = useRef({ x: 0, y: 0 });
   const originalBodyOverflowRef = useRef<string>('');
+  const defaultTitleRef = useRef<string>(document.title);
 
   const fetchedRef = useRef(false);
 
@@ -206,6 +207,23 @@ const PostDetail: React.FC = () => {
       setCollapsedCodeBlocks(new Set());
     }
   }, [currentPost]);
+
+  useEffect(() => {
+    if (currentPost?.title) {
+      document.title = currentPost.title;
+      return;
+    }
+
+    if (!loading) {
+      document.title = defaultTitleRef.current;
+    }
+  }, [currentPost?.title, loading]);
+
+  useEffect(() => {
+    return () => {
+      document.title = defaultTitleRef.current;
+    };
+  }, []);
 
   useEffect(() => {
     if (!contentRef.current || currentPost?.contentType !== 'HTML') {
